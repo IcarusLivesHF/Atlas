@@ -19,6 +19,7 @@ Windows Batch Library split into sublibraries
     Now you have the macros and variables provided from the file.bat
     
     For example:
+    
         @echo off & setlocal enableDelayedExpansion
 
         call lib\stdlib 80 60
