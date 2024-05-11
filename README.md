@@ -17,3 +17,14 @@ Windows Batch Library split into sublibraries
     + call lib\file args
 
     Now you have the macros and variables provided from the file.bat
+    
+    For example:
+        @echo off & setlocal enableDelayedExpansion
+
+        call lib\stdlib 80 60
+        call lib\math
+        
+        rem after this line, you have all of the variables and macros from the libraries called above.
+        
+        pause
+        exit
