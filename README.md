@@ -12,3 +12,8 @@ Windows Batch Library split into sublibraries
 
     + Click and Drag your sketch onto `LibTrim.bat` to zip your sketch project
     + the libraries used inside `SKETCH.bat` will be zipped for you *automatically*
+
+# *Usage* #
+    + call lib\file args
+
+    Now you have the macros and variables provided from the file.bat
