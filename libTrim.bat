@@ -18,7 +18,7 @@ for /f "delims=" %%i in (%~1) do (
 )
 
 if "%~2" neq "" (
-	set "outputName=%~2"
+	set "outputName=%~2.zip"
 ) else (
 	set "outputName=newProject%random%.zip"
 )
