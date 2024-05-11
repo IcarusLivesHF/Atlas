@@ -12,7 +12,7 @@ Windows Batch Library split into sublibraries
     + Click and Drag your sketch onto `LibTrim.bat` to zip your sketch project
     + the libraries used inside `SKETCH.bat` will be zipped for you *automatically*
 
-[https://www.dropbox.com/scl/fi/btxwq6f71yjhi29whpzxc/explorer_Hmc5nBK8i6.mp4?rlkey=p6cpx04biad4c9yf3cd4mynib&dl=0](https://www.dropbox.com/scl/fi/btxwq6f71yjhi29whpzxc/explorer_Hmc5nBK8i6.mp4?rlkey=p6cpx04biad4c9yf3cd4mynib&dl=0)
+[LibTrim Usage](https://www.dropbox.com/scl/fi/btxwq6f71yjhi29whpzxc/explorer_Hmc5nBK8i6.mp4?rlkey=p6cpx04biad4c9yf3cd4mynib&dl=0)
 
 # *Usage* #
     + call lib\file args
