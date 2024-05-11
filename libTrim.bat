@@ -17,6 +17,12 @@ for /f "delims=" %%i in (%~1) do (
 	)
 )
 
-tar -cf "newProject%random%.zip" "sketch"
+if "%~2" neq "" (
+	set "outputName=%~2"
+) else (
+	set "outputName=newProject%random%.zip"
+)
+
+tar -cf "%outputName%" "sketch"
 
 rmdir /s /q sketch
