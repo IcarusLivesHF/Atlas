@@ -10,4 +10,5 @@ Windows Batch Library split into sublibraries
 
 # PURPOSE OF LIBTRIM.BAT #
 
-    + Click and Drag your sketch onto `LibTrim.bat` to zip your sketch along with *only* the specified libraries used in the sketch.
+    + Click and Drag your sketch onto `LibTrim.bat` to zip your sketch project
+    + the libraries used inside `SKETCH.bat` will be zipped for you *automatically*
