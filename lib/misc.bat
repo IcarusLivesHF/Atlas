@@ -1,0 +1,11 @@
+set "gravity=_G_=1, ?.acceleration+=_G_, ?.velocity+=?.acceleration, ?.acceleration*=0, ?+=?.velocity"
+set "chance=1/((((^!random^! %% 100) - x) >> 31) & 1)"
+set "smoothStep=(3 * 100 - 2 * x) * x / 100 * x / 100"
+set "bitColor=C=((r)*6/256)*36+((g)*6/256)*6+((b)*6/256)+16"
+set "edgeCase=1/(((x-0)>>31)&1)|((~(x-wid)>>31)&1)|(((y-0)>>31)&1)|((~(y-=hei)>>31)&1)"
+set "boundingBox=1/(((~(y-a)>>31)&1)&((~(b-y)>>31)&1)&((~(x-c)>>31)&1)&((~(d-x)>>31)&1))"
+set "fib=?=c=a+b, a=b, b=c"
+set "rndRGB=r=^!random^! %% 255, g=^!random^! %% 255, b=^!random^! %% 255"
+set "every=1/(frameCount %% x)"
+set "FNCross=(a * d - b * c)"
+set "RRB=(^!random^! %% (x * 2 + 1) - x)" & rem Random Range Boundary
