@@ -1,8 +1,8 @@
 :graphicsFunctions
 
-for /f "tokens=2 delims=: " %%i in ('mode') do ( 2>nul set /a "0/%%i" && ( 
-	if defined hei (set /a "wid=width=%%i") else (set /a "hei=height=%%i")
-))
+if not defined wid (
+	for /f "skip=2 tokens=2" %%a in ('mode') do (if not defined hei (set /a "hei=height=%%a") else if not defined wid (set /a "wid=width=%%a"))
+)
 
 for /f %%a in ('echo prompt $E^| cmd') do set "\e=%%a"
 
@@ -14,13 +14,10 @@ for /l %%i in (0,1,5) do set "barBuffer=!barBuffer!!barBuffer!Û" & set "boxBuffe
 set "sin=(a=((x*31416/180)%%62832)+(((x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000) / 10000"
 set "cos=(a=((15708-x*31416/180)%%62832)+(((15708-x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000) / 10000"
 
-set "frames=frameCount=(frameCount + 1) %% Limit.32bit"
-set "loop=for /l %%# in () do  ( set /a "%frames%""
-set "throttle=for /l %%# in (1,x,1000000) do rem"
-set "every=1/(frameCount %% x)"
+For /l %%i in (1 1 4)Do Set "loop=!Loop!For /l %%# in (1 1 16)Do if not defined Stop "
+set "delay=for /l %%# in (1,x,1000000) do rem"
 
 set "pixel=Û"
-
 :_background
 REM %@background% color1 color2 lineColor2Starts
 set @background=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
@@ -61,8 +58,8 @@ set @construct=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!ar
 		set /a "%%~1.length+=1"%\n%
 		set "%%~1.list=^!%%~1.list^!^!%%~1.length^! "%\n%
 		for %%j in (^^!%%~1.length^^!) do (%\n%
-			set /a "%%~1[%%j].x=^!random^! %% wid + 1"%\n%
-			set /a "%%~1[%%j].y=^!random^! %% hei + 1"%\n%
+			set /a "%%~1[%%j].x=^!random^! %% wid"%\n%
+			set /a "%%~1[%%j].y=^!random^! %% hei"%\n%
 			set /a "%%~1[%%j].deg=^!random^! %% 360"%\n%
 			set /a "%%~1[%%j].mag=^!random^! %% 2 + 1"%\n%
 			set /a "%%~1[%%j].i=(^!random^! %% 2 * 2 - 1) * %%~1[%%j].mag"%\n%
