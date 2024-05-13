@@ -18,6 +18,13 @@ For /l %%i in (1 1 4)Do Set "loop=!Loop!For /l %%# in (1 1 16)Do if not defined 
 set "delay=for /l %%# in (1,x,1000000) do rem"
 
 set "pixel=Û"
+
+:_concat
+rem %concat% x y "string" outputVar
+set @concat=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
+	set "$%%~4=^!$%%~4^!%\e%[%%~2;%%~1H%%~3"%\n%
+)) else set args=
+
 :_background
 REM %@background% color1 color2 lineColor2Starts
 set @background=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
