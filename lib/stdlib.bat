@@ -16,6 +16,8 @@ set "\h=%\e%[2J%\e%[H"                                 %= \h =%
 
 set "@download_Font=start https://newengine.org/downloads/fonts/MxPlus_IBM_EGA_8x8.ttf"
 
+set "@recommended_Font=MxPlus IBM EGA 8x8"
+
 set "@32bitlimit=0x7FFFFFFF" & rem 2147483647 or (1 << 31) - 1 or 0x7FFFFFFF
 
 set "@fullScreen=(title batchfs) ^& Mshta.exe vbscript:Execute("Set Ss=CreateObject(""WScript.Shell""):Ss.AppActivate ""batchfs"":Ss.SendKeys ""{F11}"":close")"
@@ -42,6 +44,7 @@ Features:
 	
 	Macros:
 		@download_Font
+		@recommended_Font
 		@fullScreen
 		@getDim
 	

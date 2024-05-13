@@ -94,10 +94,10 @@ set @getDistance=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!
 	set /a "%%5=( ?=((((((%%1 - %%2))>>31|1)*((%%1 - %%2)))-((((%%3 - %%4))>>31|1)*((%%3 - %%4))))>>31)+1, ?*(2*((((%%1 - %%2))>>31|1)*((%%1 - %%2)))-((((%%3 - %%4))>>31|1)*((%%3 - %%4)))-(((((%%1 - %%2))>>31|1)*((%%1 - %%2)))-((((%%3 - %%4))>>31|1)*((%%3 - %%4))))) + ^^^!?*(((((%%1 - %%2))>>31|1)*((%%1 - %%2)))-((((%%3 - %%4))>>31|1)*((%%3 - %%4)))-(((((%%1 - %%2))>>31|1)*((%%1 - %%2)))-((((%%3 - %%4))>>31|1)*((%%3 - %%4)))*2)) )"%\n%
 )) else set args=
 
-:_exp
-rem %exp% num pow <rtnVar>
+:_pow
+rem %pow% num pow <rtnVar>
 for /l %%a in (1,1,30) do set "pb=!pb!x*"
-set @exp=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
+set @pow=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
 	set /a "x=%%~1","$p=%%~2*2-1"%\n%
 	for %%a in (^^!$p^^!) do set /a "%%~3=^!pb:~0,%%a^!"%\n%
 )) else set args=
@@ -261,7 +261,7 @@ set @image=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1" %%1 in ("^!args^!")
 	set "%%~1=^!%%~1:~0,-3^![0m"%\n%
 )) else set args=
 
-:msgBox
+:_msgBox
 rem %msgBox% 'title'text'x;y;textColor;boxColor;boxLength
 set @msgBox=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-7 delims=`;" %%1 in ("^!args:~1^!") do (%\n%
 	if "%%~5" neq "" ( set "t.color=%%~5" ) else ( set "t.color=15" )%\n%
