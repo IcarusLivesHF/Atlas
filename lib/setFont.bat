@@ -1,3 +1,16 @@
+if exist "%SYSTEMROOT%\Fonts\MxPlus_IBM_EGA_8x8.ttf" (
+	if "%~1" neq "" (
+		echo=%~1|findstr /ric:"[^0123456789]" || (
+			call :setFont %~1 %~1 "MxPlus IBM EGA 8x8"
+		)
+	)
+) else (
+	rem if "MxPlus IBM EGA 8x8" font is not installed on current machine, offer macro to download the font.
+	rem simply execute %@download_Font% or visit link referenced.
+	set "@download_Font=start https://newengine.org/downloads/fonts/MxPlus_IBM_EGA_8x8.ttf"
+)
+goto :eof
+
 :setfont
 if "%~3" equ "" goto :eof
 setlocal DisableDelayedExpansion
