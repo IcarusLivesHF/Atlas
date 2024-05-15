@@ -7,9 +7,7 @@ if not exist "lib\" ( mkdir "lib" )
 :main
 
 echo %\e%[6;3H%\e%(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk%\e%(B
-set "options=0" & for %%i in (
-	3x4Font array_operations buttons encoding extlib file_operations getMouseEXE gfx logicGates math misc setFont shape sorting stdlib turtlegfx util
-) do (
+set "options=0" & for /f "delims=" %%i in ('dir /b "lib\*.bat"') do (
 	set /a "options+=1"
 	set "option[!options!]=%%~i"
 	echo   %\e%(0x%\e%(B%\e%7%\e%[38;5;11m!options!%\e%[0m.%\e%8%\e%[12C%\e%7%\e%[38;5;39m%%~i%\e%[0m%\e%8%\e%[57C%\e%(0x%\e%(B
