@@ -13,6 +13,12 @@ for /f "delims=" %%i in (%~1) do (
 				set "current=!current:~0,-4!"
 			)
 			>nul xcopy lib\!current!.bat sketch\lib
+			if /i "!current!" equ "sound" (
+				if not exist sketch\lib\sfx (
+					md sketch\lib\sfx
+				)
+				>nul xcopy lib\sfx sketch\lib\sfx
+			)
 		)
 	)
 )
@@ -26,3 +32,4 @@ if "%~2" neq "" (
 tar -cf "%outputName%" "sketch"
 
 rmdir /s /q sketch
+
