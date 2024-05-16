@@ -1,5 +1,7 @@
 @echo off & setlocal enableDelayedExpansion
 
+if "%~1" equ "" exit /b
+
 md sketch\lib
 
 >nul xcopy %~1 sketch

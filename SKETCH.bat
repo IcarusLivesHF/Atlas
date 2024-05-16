@@ -1,9 +1,6 @@
 @echo off & setlocal enableDelayedExpansion
 
-call lib\stdlib 104 50
+call lib\stdlib
 
-:main
-
-echo %\e%[10;10H Hello World
-
-goto :main
+pause
+exit

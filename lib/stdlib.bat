@@ -14,7 +14,7 @@ set "\h=%\e%[2J%\e%[H"                                 %= \h =%
 <nul set /p "=%\e%[?25l"     & rem hide cursor
 
 set "@32bitlimit=0x7FFFFFFF" & rem 2147483647 or (1 << 31) - 1 or 0x7FFFFFFF
-set "@fullScreen=(title batchfs) ^& Mshta.exe vbscript:Execute("Set Ss=CreateObject(""WScript.Shell""):Ss.AppActivate ""batchfs"":Ss.SendKeys ""{F11}"":close")"
+
 set  @getDim=(%\n%
 	set "wid=" ^& set "hei=" ^& set "width=" ^& set "height="%\n%
 	for /f "skip=2 tokens=2" %%a in ('mode') do if not defined hei (set /a "hei=height=%%a") else if not defined wid set /a "wid=width=%%a"%\n%
@@ -36,7 +36,6 @@ Features:
 	Sets size of window and provides definitions in variables, see below
 	
 	Macros:
-		@fullScreen
 		@getDim
 	
 	Values:
