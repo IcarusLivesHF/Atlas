@@ -15,6 +15,7 @@ set "\h=%\e%[2J%\e%[H"                                 %= \h =%
 
 set "@32bitlimit=0x7FFFFFFF" & rem 2147483647 or (1 << 31) - 1 or 0x7FFFFFFF
 
+rem %@getDim% - get current dimensions of window
 set  @getDim=(%\n%
 	set "wid=" ^& set "hei=" ^& set "width=" ^& set "height="%\n%
 	for /f "skip=2 tokens=2" %%a in ('mode') do if not defined hei (set /a "hei=height=%%a") else if not defined wid set /a "wid=width=%%a"%\n%

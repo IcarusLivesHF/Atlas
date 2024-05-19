@@ -1,35 +1,48 @@
-:graphicsFunctions
-
-if not defined wid (
-	for /f "skip=2 tokens=2" %%a in ('mode') do (if not defined hei (set /a "hei=height=%%a") else if not defined wid (set /a "wid=width=%%a"))
-)
-
+rem get \e
 for /f %%a in ('echo prompt $E^| cmd') do set "\e=%%a"
-
+rem get \n
 (set \n=^^^
 %= This creates an escaped Line Feed - DO NOT ALTER =%
 )
-
+rem define @32bitlimit if we wasn't already
 set "@32bitlimit=0x7FFFFFFF"
 
-for /l %%i in (0,1,5) do set "barBuffer=!barBuffer!!barBuffer! " & set "boxBuffer=!boxBuffer!!boxBuffer!Ä"
+rem define a few buffers
+for /l %%i in (0,1,5) do set "barBuffer=!barBuffer!!barBuffer! " & set "qBuffer=!qBuffer!!qBuffer!q"
+
+rem defined sin/cos if they aren't already
 set "sin=(a=((x*31416/180)%%62832)+(((x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000) / 10000"
 set "cos=(a=((15708-x*31416/180)%%62832)+(((15708-x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000) / 10000"
 
+:_collisionRectRect
+set "@collisionRectRect=((~((a+c)-e)>>31)&1) & ((~((e+g)-a)>>31)&1) & ((~((b+d)-f)>>31)&1) & ((~((f+h)-b)>>31)&1)"
+
+:_getDim
+rem %@getDim% - get current dimensions of window
+set  @getDim=(%\n%
+	set "wid=" ^& set "hei=" ^& set "width=" ^& set "height="%\n%
+	for /f "skip=2 tokens=2" %%a in ('mode') do if not defined hei (set /a "hei=height=%%a") else if not defined wid set /a "wid=width=%%a"%\n%
+)
+rem if we didn't get dimensions of window, get them now.
+if not defined wid ( %@getDim% )
+
+:_loop
+REM %loop% 65536 times - define STOP to break
 For /l %%i in (1 1 4)Do Set "loop=!Loop!For /l %%# in (1 1 16)Do if not defined Stop "
+
+:_delay
+REM %delay:x=10%
 set "delay=for /l %%# in (1,x,1000000) do rem"
 
-set "pixel=Û"
-
 :_concat
-rem %concat% x y "string" outputVar
+rem %concat% x y "string" outputVar / %concat% "string" outputVar
 set @concat=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
-	set "%%~4=^!%%~4^!%\e%[%%~2;%%~1H%%~3"%\n%
+	if "%~3" neq "" ( set "%%~4=^!%%~4^!%\e%[%%~2;%%~1H%%~3" ) else set "%%~2=^!%%~2^!%%~1"%\n%
 )) else set args=
 
 :_background
 REM %@background% color1 color2 lineColor2Starts
-set @background=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
+set @background=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
 	set "$background=%\e%[48;5;%%~1m%\e%[0J%\e%[%%~3H%\e%[48;5;%%~2m%\e%[0J"%\n%
 )) else set args=
 
@@ -104,7 +117,6 @@ set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^
 
 :_rect
 rem %rect% x y w h <rtn> $rect
-for /l %%i in (0,1,5) do set "qBuffer=!qBuffer!!qBuffer!q"
 set @rect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
 	set "$rect=%\e%[%%~2;%%~1H%\e%(0%\e%7l^!qBuffer:~0,%%~3^!k%\e%8%\e%[B"%\n%
 	for /l %%i in (1,1,%%~4) do set "$rect=^!$rect^!%\e%7x%\e%%\e%[%%~3Cx%\e%8%\e%[B"%\n%
@@ -152,16 +164,16 @@ set @bezier=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-8" %%1 in ("^!args^
 :_arc
 rem arc x y size DEGREES(0-360) arcRotationDegrees(0-360) lineThinness color
 set @arc=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-7" %%1 in ("^!args^!") do (%\n%
-	set "$arc=%\e%[38;5;15m"%\n%
+	set "$arc=%\e%[48;5;15m"%\n%
     for /l %%e in (%%~4,%%~6,%%~5) do (%\n%
 		set /a "_x=%%~3 * ^!cos:x=%%e^! + %%~1", "_y=%%~3 * ^!sin:x=%%e^! + %%~2"%\n%
-		set "$arc=^!$arc^!%\e%[^!_y^!;^!_x^!H%pixel%"%\n%
+		set "$arc=^!$arc^!%\e%[^!_y^!;^!_x^!H "%\n%
 	)%\n%
 	set "$arc=^!$arc^!%\e%[0m"%\n%
 )) else set args=
 
 :_getBar
-rem %getBar% currentValue maxValue MaxlengthOfBar vtColorScheme(2 or 5) colorCode colorCode colorCode
+rem %bar% currentValue maxValue MaxlengthOfBar vtColorScheme(2 or 5) colorCode colorCode colorCode
 set @Bar=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-7" %%1 in ("^!args^!") do (%\n%
 	set /a "barVal=%%~3*%%~1/%%~2", "onethird=%%~2 / 3", "twoThird=onethird * 2"%\n%
 	if %%~1 lss ^^!onethird^^! (%\n%
@@ -224,9 +236,9 @@ set @msgBox=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-7 delims=;" %%1 in 
 	set "str=^!str:?=^!" ^& set "length=0" ^& for /l %%b in (10,-1,0) do set /a "length|=1<<%%b" ^& for %%c in (^^!length^^!) do if "^!str:~%%c,1^!" equ "" set /a "length&=~1<<%%b"%\n%
 	set /a "msgBox.height=length / msgBox.length + 4", "msgBox.width=msgBox.length - 2"%\n%
 	for /f "tokens=1-3" %%a in ("^!msgBox.width^! ^!msgBox.length^! ^!msgBox.height^!") do (%\n%
-		set "$msgBox=%\e%[38;5;^!box.color^!m%\e%[%%~4;%%~3HÚ^!boxBuffer:~0,%%~a^!¿%\e%[%%~bD%\e%[B³%\e%[%%~aC³%\e%[%%~bD%\e%[BÃ^!boxBuffer:~0,%%~a^!´%\e%[%%~bD%\e%[B"%\n%
+		set "$msgBox=%\e%[38;5;^!box.color^!m%\e%[%%~4;%%~3HÚ%\e%(0^!qBuffer:~0,%%~a^!%\e%(B¿%\e%[%%~bD%\e%[B³%\e%[%%~aC³%\e%[%%~bD%\e%[BÃ%\e%(0^!qBuffer:~0,%%~a^!%\e%(B´%\e%[%%~bD%\e%[B"%\n%
 		for /l %%i in (0,1,%%~c) do set "$msgBox=^!$msgBox^!³%\e%[%%~aC³%\e%[%%~bD%\e%[B"%\n%
-		set "$msgBox=^!$msgBox^!À^!boxBuffer:~0,%%~a^!Ù%\e%[0m"%\n%
+		set "$msgBox=^!$msgBox^!À%\e%(0^!qBuffer:~0,%%~a^!%\e%(BÙ%\e%[0m"%\n%
 	)%\n%
 	set "str=^!str:=?^!"%\n%
 	set /a "textx=%%~3 + 2", "texty=%%~4 + 1", "msgBox.width-=2"%\n%
