@@ -16,6 +16,7 @@ set "cos=(a=((15708-x*31416/180)%%62832)+(((15708-x*31416/180)%%62832)>>31&62832
 
 :_collisionRectRect
 set "@collisionRectRect=((~((a+c)-e)>>31)&1) & ((~((e+g)-a)>>31)&1) & ((~((b+d)-f)>>31)&1) & ((~((f+h)-b)>>31)&1)"
+set "@collisionPoint= !(x-1>>31)  &  !(y-1>>31)  &  ((wid-(x+1))>>31)+1  &  ((hei-(y+1))>>31)+1"
 
 :_getDim
 rem %@getDim% - get current dimensions of window
@@ -97,11 +98,11 @@ set @getDistance=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!
 )) else set args=
 
 :_pow
-rem %pow% num pow <rtnVar>
-for /l %%a in (1,1,30) do set "pb=!pb!x*"
-set @pow=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
-	set /a "x=%%~1","$p=%%~2*2-1"%\n%
-	for %%a in (^^!$p^^!) do set /a "%%~3=^!pb:~0,%%a^!"%\n%
+rem %@pow% base exp <rtn> $pow
+set "pow.buffer=x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x"
+set @pow=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
+	set /a "exp=%%~2 * 2 - 1"%\n%
+	for %%a in (^^!exp^^!) do set /a "x=%%~1","$pow=^!pow.buffer:~0,%%a^!"%\n%
 )) else set args=
 
 :_circle
@@ -211,6 +212,12 @@ set @tdiff=(%\n%
 	if "^!$sec:~1^!" equ "" set "$sec=0^!$sec^!"%\n%
 	title FPS:^^!fps^^! Time: ^^!$min^^!:^^!$sec^^! Frames: ^^!frameCount^^!/^^!$TT^^!%\n%
 )
+
+:_timeStamp
+rem %@timestamp% var
+set @timeStamp=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
+	for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "%%~1=(((1%%a*60)+1%%b)*60+1%%c)*100+1%%d-36610100"%\n%
+)) else set args=
 
 :_sevenSegmentDisplay
 rem %sevenSegmentDisplay% x y value color <rtn> $sevenSegmentDisplay
