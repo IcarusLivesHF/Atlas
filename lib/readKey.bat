@@ -2,8 +2,12 @@
 setlocal EnableDelayedExpansion
 
 :loop
+if exist "%temp%\abort.txt" (
+	del /f /q "%temp%\abort.txt">nul
+	exit
+)
 call :readKey
-echo "!key!"
+echo=!key!
 goto :loop
 
 :readKey

@@ -48,6 +48,11 @@ set @fetchKey=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1" %%1 in ("^!args^
 	if defined %%~1 set "last%%~1=^!%%~1^!"%\n%
 	set "%%~1=" ^& set /p "%%~1="%\n%
 )) else set args=
+
+:_abort
+rem %@abort
+set "@abort=echo=.>"%temp%\abort.txt" & exit"
+
 goto :eof
 
 Features:
