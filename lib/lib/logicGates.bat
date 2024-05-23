@@ -1,0 +1,10 @@
+set "LSS(x,y)=(((x-y)>>31)&1)"
+set "LEQ(x,y)=((~(y-x)>>31)&1)"
+set "GTR(x,y)=(((y-x)>>31)&1)"
+set "GEQ(x,y)=((~(x-y)>>31)&1)"
+set "EQU(x,y)=(((~(y-x)>>31)&1)&((~(x-y)>>31)&1))"
+set "NEQ(x,y)=((((x-y)>>31)&1)|(((y-x)>>31)&1))"
+set "AND(b1,b2)=(b1&b2)"
+set "OR(b1,b2)=(b1|b2)"
+set "XOR(b1,b2)=(b1^b2)"
+set "TERN(bool,v1,v2)=((bool*v1)|((~bool&1)*v2))"  &REM ?:
