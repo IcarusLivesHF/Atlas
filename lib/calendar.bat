@@ -109,9 +109,11 @@ for /l %%i in (1,1,%date.monthLoop%) do (
 	)
 )
 
-set /a "bx=%~1 - 1","by=%~2 - 1"
-set "$calendar=%\e%[%~2;%~1H!$calendar!%\e%[0m%\e%8%\e%[8B[%\e%7%\e%[48;5;!hue!m!barBuffer:~0,%barVal%!%\e%[0m%\e%8%\e%[15C][%\e%[38;5;!hue!m!date.date!%\e%[0m/!date.daysinmonth!:%\e%[38;5;!hue!m!date.percent!%\e%[0m%%]"
-set "$calendar=!$calendar!%\e%[!by!;!bx!H%\e%(0%\e%7lqqqqqqqqqqqqqqqqqqqqqqqqqqqqk%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7tqqqqqqqqqqqqqqqqqqqqqqqqqqqqu%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[Bmqqqqqqqqqqqqqqqqqqqqqqqqqqqqj%\e%(B%\e%[0m"
+if "%~2" neq "" (
+	set /a "bx=%~1","by=%~2", "bi=%~1 - 1","bj=%~2 - 1"
+) else set /a "bx=2","by=2", "bi=1","bj=1"
+set "$calendar=%\e%[%by%;%bx%H!$calendar!%\e%[0m%\e%8%\e%[8B[%\e%7%\e%[48;5;!hue!m!barBuffer:~0,%barVal%!%\e%[0m%\e%8%\e%[15C][%\e%[38;5;!hue!m!date.date!%\e%[0m/!date.daysinmonth!:%\e%[38;5;!hue!m!date.percent!%\e%[0m%%]"
+set "$calendar=!$calendar!%\e%[%bj%;%bi%H%\e%(0%\e%7lqqqqqqqqqqqqqqqqqqqqqqqqqqqqk%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7tqqqqqqqqqqqqqqqqqqqqqqqqqqqqu%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[Bmqqqqqqqqqqqqqqqqqqqqqqqqqqqqj%\e%(B%\e%[0m"
 set "date.date=!date.date.name!"
 for %%i in (i r g b name hex found date.offset date.date.name date.monthLoop weekDays barval onethird twoThird hue) do set "%%~i="
 for /f "tokens=1 delims==" %%i in ('set dayColor') do set "%%~i="
