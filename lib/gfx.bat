@@ -109,8 +109,8 @@ set @pow=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!")
 rem %circle% x y ch cw <rtn> $circle
 set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
 	set "$circle=%\e%[48;5;15m"%\n%
-	for /l %%a in (0,3,360) do (%\n%
-		set /a "xa=%%~3 * ^!cos:x=%%a^! + %%~1", "ya=%%~4 * ^!sin:x=%%a^! + %%~2"%\n%
+	for /l %%a in (0,6,360) do (%\n%
+		set /a "xa=%%~3 * ^!cos:x=%%a^! + %%~1 + 1", "ya=%%~4 * ^!sin:x=%%a^! + %%~2 + 1"%\n%
 		set "$circle=^!$circle^!%\e%[^!ya^!;^!xa^!H "%\n%
 	)%\n%
 	set "$circle=^!$circle^!%\e%[0m"%\n%
@@ -120,8 +120,8 @@ set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^
 rem %rect% x y w h <rtn> $rect
 set @rect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
 	set "$rect=%\e%[%%~2;%%~1H%\e%(0%\e%7l^!qBuffer:~0,%%~3^!k%\e%8%\e%[B"%\n%
-	for /l %%i in (1,1,%%~4) do set "$rect=^!$rect^!%\e%7x%\e%%\e%[%%~3Cx%\e%8%\e%[B"%\n%
-	set "$rect=^!$rect^!m^!qBuffer:~0,%%~3^!j%\e%%\e%(B%\e%%\e%[0m"%\n%
+	for /l %%i in (1,1,%%~4) do set "$rect=^!$rect^!%\e%7x%\e%[%%~3Cx%\e%8%\e%[B"%\n%
+	set "$rect=^!$rect^!m^!qBuffer:~0,%%~3^!j%\e%(B%\e%[0m"%\n%
 )) else set args=
 
 :_line
@@ -206,7 +206,7 @@ set @getlen=for %%# in (1 2) do if %%#==2 ( for %%1 in (^^!args^^!) do (%\n%
 :_tDiff
 rem %tDiff% <rtn> deltaTime, FPS, $TT, $min, $sec, frameCount
 set @tdiff=(%\n%
-	for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "t1=((((1%%a-1000)*60+(1%%b-1000))*60+(1%%c-1000))*100)+(1%%d-1000)"%\n%
+	for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "t1=((((10%%a-1000)*60+(10%%b-1000))*60+(10%%c-1000))*100)+(10%%d-1000)"%\n%
 	if defined t2 set /a "deltaTime=(t1 - t2)","$TT+=deltaTime","fps=60 * (1000 / (deltaTime + 1)) / 1000","$sec=$TT / 100 %% 60","$min=$TT / 100 / 60 %% 60","frameCount=(frameCount + 1) %% @32bitlimit"%\n%
 	set /a "t2=t1"%\n%
 	if "^!$sec:~1^!" equ "" set "$sec=0^!$sec^!"%\n%
@@ -216,7 +216,7 @@ set @tdiff=(%\n%
 :_timeStamp
 rem %@timestamp% var
 set @timeStamp=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
-	for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "%%~1=(((1%%a*60)+1%%b)*60+1%%c)*100+1%%d-36610100"%\n%
+	for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "%%~1=((((10%%a-1000)*60+(10%%b-1000))*60+(10%%c-1000))*100)+(10%%d-1000)"%\n%
 )) else set args=
 
 :_sevenSegmentDisplay

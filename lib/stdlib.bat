@@ -24,7 +24,7 @@ set  @getDim=(%\n%
 
 %@getDim%
 if "%~2" neq "" (
-	set /a "wid=width=%~1", "hei=height=%~2"
+	set /a "wid=width=%~1", "hei=height=%~2 - 1"
 	mode %~1,%~2
 ) 2>nul
 

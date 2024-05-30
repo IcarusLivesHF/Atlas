@@ -21,6 +21,8 @@ set @calendar.click=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1" %%1 in ("^
 rem define a few buffers
 for /l %%i in (0,1,5) do set "barBuffer=!barBuffer!!barBuffer! "
 
+if "%~3" neq "" ( set "color=%~3" ) else set "color=16"
+
 rem init calendar details set date
 set "totalDaysInMonth.list="01 January 31" "02 February 28" "03 March 31" "04 April 30" "05 May 31" "06 June 30" "07 July 31" "08 August 31" "09 September 30" "10 October 31" "11 November 30" "12 December 31""
 set "weekDays=Sun Mon Tue Wed Thu Fri Sat"
@@ -82,7 +84,7 @@ if /i "!date.day!" equ "Sun" (
 
 rem build calendar into sprite
 set /a "i=date.offset", "date.offset*=4", "date.monthLoop=date.daysInMonth - date.daysLeft"
-set "$calendar==%\e%7%\e%[38;5;15;48;5;16m%\e%[4m%\e%7Days left: !date.daysleft!%\e%8%\e%[14C%\e%(0x%\e%(B Pick a date:%\e%[0m%\e%8%\e%[B%\e%7 S  %dayColor[1]% M  %dayColor[2]% T  %dayColor[3]% W  %dayColor[4]% T  %dayColor[5]% F  %\e%[0m S  %\e%8%\e%[B"
+set "$calendar==%\e%7%\e%[38;5;15;48;5;%color%m%\e%[4m%\e%7 Days left: !date.daysleft!%\e%8%\e%[14C%\e%(0x%\e%(B Pick a date:%\e%[0m%\e%8%\e%[B%\e%7 S  %dayColor[1]% M  %dayColor[2]% T  %dayColor[3]% W  %dayColor[4]% T  %dayColor[5]% F  %\e%[0m S  %\e%8%\e%[B"
 set "$calendar!$calendar!%\e%[%date.offset%C%\e%[38;5;16;48;5;15m%back%"
 
 set /a "j=1"
@@ -112,10 +114,11 @@ for /l %%i in (1,1,%date.monthLoop%) do (
 if "%~2" neq "" (
 	set /a "bx=%~1","by=%~2", "bi=%~1 - 1","bj=%~2 - 1"
 ) else set /a "bx=2","by=2", "bi=1","bj=1"
-set "$calendar=%\e%[%by%;%bx%H!$calendar!%\e%[0m%\e%8%\e%[8B[%\e%7%\e%[48;5;!hue!m!barBuffer:~0,%barVal%!%\e%[0m%\e%8%\e%[15C][%\e%[38;5;!hue!m!date.date!%\e%[0m/!date.daysinmonth!:%\e%[38;5;!hue!m!date.percent!%\e%[0m%%]"
-set "$calendar=!$calendar!%\e%[%bj%;%bi%H%\e%(0%\e%7lqqqqqqqqqqqqqqqqqqqqqqqqqqqqk%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7tqqqqqqqqqqqqqqqqqqqqqqqqqqqqu%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[Bmqqqqqqqqqqqqqqqqqqqqqqqqqqqqj%\e%(B%\e%[0m"
+
+set "$calendar=%\e%[%by%;%bx%H!$calendar!%\e%[0m%\e%8%\e%[8B%\e%[48;5;%color%m[%\e%7%\e%[48;5;!hue!m!barBuffer:~0,%barVal%!%\e%[0m%\e%8%\e%[15C%\e%[48;5;%color%m][%\e%[48;5;%color%;38;5;!hue!m!date.date!%\e%[0m%\e%[48;5;%color%m/!date.daysinmonth!:%\e%[48;5;%color%;38;5;!hue!m!date.percent!%\e%[48;5;%color%m%\e%[0m%\e%[48;5;%color%m%%%\e%[0m%\e%[48;5;%color%m]%\e%[0m"
+set "$calendar=!$calendar!%\e%[%bj%;%bi%H%\e%[48;5;%color%m%\e%(0%\e%7lqqqqqqqqqqqqqqqqqqqqqqqqqqqqk%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7tqqqqqqqqqqqqqqqqqqqqqqqqqqqqu%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[Bmqqqqqqqqqqqqqqqqqqqqqqqqqqqqj%\e%(B%\e%[0m"
 set "date.date=!date.date.name!"
-for %%i in (i r g b name hex found date.offset date.date.name date.monthLoop weekDays barval onethird twoThird hue) do set "%%~i="
+for %%i in (bx by i r g b name hex found date.offset date.date.name date.monthLoop weekDays barval onethird twoThird hue) do set "%%~i="
 for /f "tokens=1 delims==" %%i in ('set dayColor') do set "%%~i="
 for /f "tokens=1 delims==" %%i in ('set dayDay') do set "%%~i="
 goto :eof
