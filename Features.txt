@@ -46,7 +46,7 @@ Table of Contents
 		%sevenSegmentDisplay% x y value color <rtn> $sevenSegmentDisplay
 		%msgBox% 'title'text'x;y;textColor;boxColor;boxLength
 		
-	gfxUtil.bat
+    gfxUtil.bat
 		%loop% 65536 times - define STOP to break
 		%@delay:x=10%
 		%concat% x y "string" outputVar / %concat% "string" outputVar
