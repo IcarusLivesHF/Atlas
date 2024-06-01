@@ -1,0 +1,216 @@
+Table of Contents
+    3x4Font.bat          "String"
+        Returns - %$3x4Font%
+    
+    array_operations.bat <no arguments>
+		%@shuffleArray% <input:*[]> <len:int>
+		%@reverseArray% <input:*[]> <len:int>
+		%arrayContains% <input:*[]> <len:int>
+		%sort[fwd]:#=stingArray%
+		%sort[rev]:#=stingArray%
+		%filter[fwd]:#=stingArray%
+		%filter[rev]:#=stingArray%
+
+    buttons.bat          <no arguments>
+		
+    calendar.bat         Xloc{optional} Yloc{optional}
+        Returns - %$calendar%
+    
+    cmdwiz.bat           <no arguments>
+		%cmdwiz% - invokes cmdwiz from lib directory
+		%@controller_cmdwiz% - multithread controller
+		mouse_and_keys
+		
+    encoding.bat         <no arguments>
+		%@hexToRGB% 6 digit hexValue
+		%@hex.rnd.rgb% <rtn> r g b
+		%@hexToBase2% 1B out <rtnVar>
+		%@hexToBase4% 1B out <rtnVar>
+		%@encode% "string" <rtn> base64
+		%@decode:?=!base64!% <rtn> plainText.txt
+	
+    file_operations.bat  <no arguments>
+		%@lineInject:?=FILE NAME.EXT% "String":Line#:s
+		%@zip% file.ext zipFileName
+		%@unzip% zipFileName
+		 
+    gfx.bat              <no arguments>
+		collisionRectRect
+		%@plot% y;x 2/5;0-255;0-255;0-255
+		%@circle% x y ch cw <rtn> $circle
+		%@rect% x y w h <rtn> $rect
+		%@line% x0 y0 x1 y1 color
+		%@bezier% x1 y1 x2 y2 x3 y3 x4 y4
+		%@arc% x y size DEGREES(0-360) arcRotationDegrees(0-360) lineThinness color
+		%@bar% currentValue maxValue MaxlengthOfBar vtColorScheme(2 or 5) colorCode colorCode colorCode
+		%sevenSegmentDisplay% x y value color <rtn> $sevenSegmentDisplay
+		%msgBox% 'title'text'x;y;textColor;boxColor;boxLength
+		
+	gfxUtil.bat
+		%loop% 65536 times - define STOP to break
+		%@delay:x=10%
+		%concat% x y "string" outputVar / %concat% "string" outputVar
+		%@background% color1 color2 lineColor2Starts
+		%@fullscreen%
+		%@plot% y;x 2/5;0-255;0-255;0-255
+		%@construct% %%~1:NAME %%~2:end/optional %%~3:ID/optional <rtn> %%~1[n].ATTRIBUTES
+		%getDistance% x2 x1 y2 y1 <rtnVar>
+		%@HSL.RGB% 0-3600 0-10000 0-10000 <rtn> r g b
+		%@getlen% "string" <rtn> $length
+		%@tDiff% <rtn> deltaTime, FPS, $TT, $min, $sec, frameCount
+		%@timestamp% var
+		
+    logicGates.bat       <no arguments>
+		equ
+		neq
+		lss
+		leq
+		gtr
+		geq
+		and
+		or
+		xor
+		tern
+		
+    math.bat             <no arguments>
+		sin
+		cos
+		sqrt
+		hypot
+		Abs
+		dist
+		map
+		lerp
+		clamp
+		BBA
+		checkBounds
+		%@pow% base exp <rtn> $pow
+
+    misc.bat             <no arguments>
+		PI
+		TWO_PI/TAU
+		HALF_PI
+		PI32
+		sinr
+		cosr
+		gravity
+		smoothStep
+		bitColor
+		fib
+		rndRGB
+		FNCross
+		randomRangeBoundary
+		randomRange
+		kappa
+		avg
+		every
+		Sign(x)
+		getState
+		index
+		max
+		min
+		swap
+		
+    readkey.bat          <no arguments>
+		Returns !key! - Can be used for multithread controller
+		
+    setFont.bat          size size "Font Name"
+    
+    shape.bat            <no arguments>
+		SQ(x)
+		CUBE(x)
+		pmSQ(x)
+		pmREC(l,w)
+		pmTRI(a,b,c)
+		areaREC(l,w)
+		areaTRI(b,h)
+		areaTRA(b1,b2,h)
+		volBOX(l,w,h)
+		areaCircle(r)
+		
+    sound.bat            <no arguments>
+		%sfx% - location of sfx
+		%@playSound% "path"
+		
+    stdlib.bat           WID{optional} HEI{optional} /multithread{optional}
+		Clears environment of unnecessary variables
+		Hides cursor
+		Sets size of window and provides definitions in variables, see below
+		
+		%~1 = width
+		%~2 = height
+		%~3 = if defined "/multithread"
+		
+		@getDim
+		
+		if /multithread
+		@multithread
+		@fetchkey
+	
+		@32bitlimit
+		wid/width
+		hei/height
+		\e = esc
+		\c = clear screen
+		\h = clear\goto 0,0
+		\n = newLine
+		
+    time.bat             <no arguments>
+		sec_min
+		sec_hour
+		min_sec
+		min_hour
+		hour_sec
+		hour_min
+		day_hour
+		hour_day
+		day_min
+		min_day
+		day_sec
+		sec_day
+		week_day
+		day_week
+		month_day
+		day_month
+		year_day
+		day_year
+		year_week
+		week_year
+		month_week
+		week_month
+		year_month
+		month_year
+		year_sec
+		sec_year
+		year_min
+		min_year
+		
+    turtleGFX.bat        "turtleName"
+		%@turtle.forward%
+		%@turtle.backward%
+		%@turtle.left%
+		%@turtle.right%
+		%@turtle.setx%
+		%@turtle.sety%
+		%@turtle.setHeading%
+		%@turtle.goto%
+		%@turtle.teleport%
+		%@turtle.define%
+		%@turtle.circle%
+		%@turtle.HSLtoRGB%
+		%@turtle.stamp%
+		%@turtle.dot%
+		%@turtle.screenSize%
+		%@turtle.push%
+		%@turtle.pop%
+		%@turtle.home%
+		%@turtle.center%
+		%@turtle.penDown%
+		%@turtle.penUp%
+		%@turtle.clearScreen%
+		
+    util.bat             <no arguments>
+		%@getAdmin%
+		%@download% url file
+		%@unique% - returns %$unique% stamp based on date/time
+		%@string_properties% "string" <rtn> $, $strin.reverse $string.upper $string.lower $string.length

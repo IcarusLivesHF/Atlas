@@ -13,7 +13,7 @@ set makeButton=for %%# in (1 2) do if %%#==2 ( for %%i in ("^!args^!") do  for /
 	set "button[%%~y].sprite=[%%~x;%%~wHÚ^!bar^!¿[^!back^!D[B³%%~2³[^!back^!D[BÀ^!bar^!Ù[0m"%\n%
 	set "button.display=^!button.display^!^!button[%%~y].sprite^!"%\n%
 	set /a "button[%%~y].xmin=%%~w - 1","button[%%~y].xmax=%%~w + length","button[%%~y].ymin=%%~x - 1","button[%%~y].ymax=%%~x + 1"%\n%
-	set "button[%%~y].clicked=if ^^^!mouse.c^^^! equ %%~z if ^^^!mouse.Y^^^! geq ^!button[%%~y].ymin^! if ^^^!mouse.Y^^^! leq ^!button[%%~y].Ymax^! if ^^^!mouse.X^^^! geq ^!button[%%~y].Xmin^! if ^^^!mouse.X^^^! leq ^!button[%%~y].Xmax^!"%\n%
+	set "button[%%~y].clicked=if ^^^!mlb^^^! equ %%~z if ^^^!my^^^! geq ^!button[%%~y].ymin^! if ^^^!my^^^! leq ^!button[%%~y].Ymax^! if ^^^!mx^^^! geq ^!button[%%~y].Xmin^! if ^^^!mx^^^! leq ^!button[%%~y].Xmax^!"%\n%
 )) else set args=
 
 :_killButton
@@ -41,7 +41,7 @@ set makeSlider=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-8" %%1 in ("^!ar
 	for /l %%i in (1,1,%%~3) do set "bar=^!bar^!Ä"%\n%
 	set /a "slider.xmin=%%~1", "slider.xmax=%%~1 + %%~3 - 1", "slider.ymin=%%~2 - 2", "slider.ymax=%%~2", "slider.position=%%~1 + 1", "back=%%~3 + 2"%\n%
 	set "slider.display=[38;5;%%~6m[%%~2;%%~1H[AÚ^!bar^!¿[^!back^!D[B(0t(B^!bar^!(0u(B[^!back^!D[BÀ^!bar^!Ù[0m[38;5;%%~7m[%%~2;^^^!slider.position^^^!HÛ[0m"%\n%
-	set "slider.clicked=if ^^^!mouse.c^^^! equ %%~8 if ^^^!mouse.x^^^! geq %%~1 if ^^^!mouse.x^^^! leq ^!slider.xmax^! if ^^^!mouse.y^^^! geq ^!slider.ymin^! if ^^^!mouse.y^^^! leq ^!slider.ymax^!"%\n%
+	set "slider.clicked=if ^^^!mlb^^^! equ %%~8 if ^^^!mx^^^! geq %%~1 if ^^^!mx^^^! leq ^!slider.xmax^! if ^^^!my^^^! geq ^!slider.ymin^! if ^^^!my^^^! leq ^!slider.ymax^!"%\n%
 	set "move.slider=v=mouse.X, a=slider.Xmin, b=slider.Xmax, c=%%~4, d=%%~5, slider.value=%map%, slider.position=mouse.x + 1"%\n%
 )) else set args=
 
@@ -54,5 +54,5 @@ set makeInputBar=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-7" %%1 in ("^!
 	for /l %%b in (6,-1,0) do set /a "length|=1<<%%b" ^& for %%c in (^^!length^^!) do if "^!str:~%%c,1^!" equ "" set /a "length&=~1<<%%b"%\n%
 	for /l %%i in (3,1,%%~4) do set "bar=^!bar^!Ä"%\n%
 	set "input.display=[A[38;5;%%~6m[%%~3;%%~2HÚ^!bar^!¿[%%~4D[B³[^!back^!C³[%%~4D[BÀ^!bar^!Ù[0m"%\n%
-	set "input.clicked=if ^^^!mouse.c^^^! equ %%~7 if ^^^!mouse.Y^^^! geq ^!input.Ymin^! if ^^^!mouse.Y^^^! leq ^!input.Ymax^! if ^^^!mouse.X^^^! geq ^!input.Xmin^! if ^^^!mouse.X^^^! leq ^!input.Xmax^! set /p "%%~1=[38;5;%%~5m[^^!input.position.y^^!;^^!input.position.x^^!HInput: ""%\n%
+	set "input.clicked=if ^^^!mlb^^^! equ %%~7 if ^^^!my^^^! geq ^!input.Ymin^! if ^^^!my^^^! leq ^!input.Ymax^! if ^^^!mx^^^! geq ^!input.Xmin^! if ^^^!mx^^^! leq ^!input.Xmax^! set /p "%%~1=[38;5;%%~5m[^^!input.position.y^^!;^^!input.position.x^^!HInput: ""%\n%
 )) else set args=

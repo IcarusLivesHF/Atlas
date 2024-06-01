@@ -16,6 +16,12 @@ set @download=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!arg
 rem %@unique%
 set "@unique=for /f "tokens=1-7 delims=/.-: " %%a in ("%date:* =% %time: =0%") do set "$unique=%%c%%a%%b%%d%%e%%f%%g""
 
+:_getLen
+rem %getlen% "string" <rtn> $length
+set @getlen=for %%# in (1 2) do if %%#==2 ( for %%1 in (^^!args^^!) do (%\n%
+	set "str=X%%~1" ^& set "length=0" ^& for /l %%b in (10,-1,0) do set /a "length|=1<<%%b" ^& for %%c in (^^!length^^!) do if "^!str:~%%c,1^!" equ "" set /a "length&=~1<<%%b"%\n%
+)) else set args=
+
 :_string_properties
 rem %string_properties "string" <rtn> $, $_rev $_upp $_low
 set @string_properties=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1 delims=" %%1 in ("^!args^!") do (%\n%

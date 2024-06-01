@@ -9,3 +9,11 @@ set "lerp=?=(a + c * (b - a) * 10) / 1000 + a"
 set "clamp= (leq=((low-(x))>>31)+1)*low  +  (geq=(((x)-high)>>31)+1)*high  +  ^^^!(leq+geq)*(x) "
 set "BBA=(((~(x-a)>>31)&1)&((~(c-x)>>31)&1)&((~(y-b)>>31)&1)&((~(d-y)>>31)&1))"
 set "checkBounds=(((wid-x)>>31)&1)|(((hei-y)>>31)&1)"
+
+:_pow
+rem %@pow% base exp <rtn> $pow
+set "pow.buffer=x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x"
+set @pow=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
+	set /a "exp=%%~2 * 2 - 1"%\n%
+	for %%a in (^^!exp^^!) do set /a "x=%%~1","$pow=^!pow.buffer:~0,%%a^!"%\n%
+)) else set args=
