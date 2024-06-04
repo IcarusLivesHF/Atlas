@@ -9,19 +9,9 @@ set "@32bitlimit=0x7FFFFFFF"
 
 for /f "skip=2 tokens=2" %%a in ('mode') do if not defined hei (set /a "hei=height=%%a") else if not defined wid set /a "wid=width=%%a"
 
-:_loop
-REM %loop% 65536 times - define STOP to break
-For /l %%i in (1 1 4)Do Set "loop=!Loop!For /l %%# in (1 1 16)Do if not defined Stop "
-
 :_delay
 REM %@delay:x=10%
 set "@delay=for /l %%# in (1,x,1000000) do rem"
-
-:_concat
-rem %concat% x y "string" outputVar / %concat% "string" outputVar
-set @concat=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
-	if "%~3" neq "" ( set "%%~4=^!%%~4^!%\e%[%%~2;%%~1H%%~3" ) else set "%%~2=^!%%~2^!%%~1"%\n%
-)) else set args=
 
 :_background
 REM %@background% color1 color2 lineColor2Starts
@@ -32,46 +22,6 @@ set @background=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!a
 :_fullscreen
 rem %@fullscreen%
 set "@fullScreen=(title batchfs) ^& Mshta.exe vbscript:Execute("Set Ss=CreateObject(""WScript.Shell""):Ss.AppActivate ""batchfs"":Ss.SendKeys ""{F11}"":close") ^& !@getdim!"
-
-:_construct
-rem %%~1:NAME %%~2:end/optional %%~3:ID/optional <rtn> %%~1[n].ATTRIBUTES
-set @construct=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
-	if /i "%%~2" neq "purge" (%\n%
-		if not defined %%~1.length set /a "%%~1.length=-1"%\n%
-		set /a "%%~1.length+=1"%\n%
-		set "%%~1.list=^!%%~1.list^!^!%%~1.length^! "%\n%
-		for %%j in (^^!%%~1.length^^!) do (%\n%
-			set /a "%%~1[%%j].x=^!random^! %% wid"%\n%
-			set /a "%%~1[%%j].y=^!random^! %% hei"%\n%
-			set /a "%%~1[%%j].deg=^!random^! %% 360"%\n%
-			set /a "%%~1[%%j].mag=^!random^! %% 2 + 1"%\n%
-			set /a "%%~1[%%j].i=(^!random^! %% 2 * 2 - 1) * %%~1[%%j].mag"%\n%
-			set /a "%%~1[%%j].j=(^!random^! %% 2 * 2 - 1) * %%~1[%%j].mag"%\n%
-		)%\n%
-	) else (%\n%
-		if "%%~3" equ "" (%\n%
-			for %%j in (^^!%%~1.length^^!) do (%\n%
-				for /l %%k in (0,1,%%j) do (%\n%
-					for %%i in (x y i j deg mag) do set "%%~1[%%k].%%i="%\n%
-				)%\n%
-				set "%%~1.length="%\n%
-				set "%%~1.list="%\n%
-			)%\n%
-		) else (%\n%
-			if "^!%%~1.list^!" neq "^!%%~1.list:%%~3 =^!" (%\n%
-				set "%%~1.list=^!%%~1.list:%%~3 =^!"%\n%
-				for %%i in (x y i j deg mag) do set "%%~1[%%~3].%%i="%\n%
-				set /a "%%~1.length-=1"%\n%
-			)%\n%
-		)%\n%
-	)%\n%
-)) else set args=
-
-:_getDistance
-rem %getDistance% x2 x1 y2 y1 <rtnVar>
-set @getDistance=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!args^!") do (%\n%
-	set /a "%%5=( ?=((((((%%1 - %%2))>>31|1)*((%%1 - %%2)))-((((%%3 - %%4))>>31|1)*((%%3 - %%4))))>>31)+1, ?*(2*((((%%1 - %%2))>>31|1)*((%%1 - %%2)))-((((%%3 - %%4))>>31|1)*((%%3 - %%4)))-(((((%%1 - %%2))>>31|1)*((%%1 - %%2)))-((((%%3 - %%4))>>31|1)*((%%3 - %%4))))) + ^^^!?*(((((%%1 - %%2))>>31|1)*((%%1 - %%2)))-((((%%3 - %%4))>>31|1)*((%%3 - %%4)))-(((((%%1 - %%2))>>31|1)*((%%1 - %%2)))-((((%%3 - %%4))>>31|1)*((%%3 - %%4)))*2)) )"%\n%
-)) else set args=
 
 :_HSL.RGB
 rem %HSL.RGB% 0-3600 0-10000 0-10000 <rtn> r g b

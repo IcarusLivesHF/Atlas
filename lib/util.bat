@@ -18,9 +18,7 @@ set "@unique=for /f "tokens=1-7 delims=/.-: " %%a in ("%date:* =% %time: =0%") d
 
 :_getLen
 rem %getlen% "string" <rtn> $length
-set @getlen=for %%# in (1 2) do if %%#==2 ( for %%1 in (^^!args^^!) do (%\n%
-	set "str=X%%~1" ^& set "length=0" ^& for /l %%b in (10,-1,0) do set /a "length|=1<<%%b" ^& for %%c in (^^!length^^!) do if "^!str:~%%c,1^!" equ "" set /a "length&=~1<<%%b"%\n%
-)) else set args=
+set "@getlen=for %%# in (1 2) do if %%#==2 ( for /f %%1 in ("^^!args^^!") do (set "$=A^^!%%1^^!" & set "$len=" &  ( for %%] in (4096 2048 1024 512 256 128 64 32 16) do if "^^!$:~%%]^^!" NEQ "" set /a "$len+=%%]" & set "$=^^!$:~%%]^^!" ) & set "$=^^!$:~1^^!FEDCBA9876543210" & set /a $len+=0x^!$:~15,1^! ) ) else set args="
 
 :_string_properties
 rem %string_properties "string" <rtn> $, $_rev $_upp $_low
