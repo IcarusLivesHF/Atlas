@@ -13,7 +13,7 @@ set "BBA=(((~(x-a)>>31)&1)&((~(c-x)>>31)&1)&((~(y-b)>>31)&1)&((~(d-y)>>31)&1))"
 set "checkBounds=(((wid-x)>>31)&1)|(((hei-y)>>31)&1)"
 
 :_pow
-rem %@pow% base exp <rtn> $pow
+rem %%@pow%% base exp ^<rtn^> $pow
 set "pow.buffer=x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x"
 set @pow=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
 	set /a "exp=%%~2 * 2 - 1"%\n%
