@@ -4,9 +4,9 @@ if "%~1" equ "" exit /b
 
 md sketch\lib
 
-xcopy %~1 sketch
+xcopy %1 sketch
 
-for /f "delims=" %%i in (%~1) do (
+for /f "usebackq delims=" %%i in ("%~1") do (
 	set "line=%%~i"
 	if /i "!line:~0,9!" equ "call lib\" (
 		for /f "tokens=1 delims= " %%a in ("!line:~9!") do (
