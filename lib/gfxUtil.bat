@@ -7,7 +7,12 @@ rem get \n
 rem define @32bitlimit if we wasn't already
 set "@32bitlimit=0x7FFFFFFF"
 
-for /f "skip=2 tokens=2" %%a in ('mode') do if not defined hei (set /a "hei=height=%%a") else if not defined wid set /a "wid=width=%%a"
+:_@getDim
+rem %@getDim% - get current dimensions of window
+set  @getDim=(%\n%
+	set "wid=" ^& set "hei=" ^& set "width=" ^& set "height="%\n%
+	for /f "skip=2 tokens=2" %%a in ('mode') do if not defined hei (set /a "hei=height=%%a") else if not defined wid set /a "wid=width=%%a"%\n%
+)
 
 :_delay
 REM %@delay:x=10%
