@@ -11,10 +11,17 @@ set "@32bitlimit=0x7FFFFFFF"
 rem define a few buffers
 for /l %%i in (0,1,5) do set "barBuffer=!barBuffer!!barBuffer! " & set "qBuffer=!qBuffer!!qBuffer!q"
 
-rem defined sin/cos (DEGREES) if they aren't already
-if not defined sin (
-	set "sin=(a=((x*31416/180)%%62832)+(((x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000) / 10000"
-	set "cos=(a=((15708-x*31416/180)%%62832)+(((15708-x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000) / 10000"
+rem defined sin/cos (RADIANS)
+set /a "PI=(35500000/113+5)/10, HALF_PI=(35500000/113/2+5)/10, TAU=TWO_PI=2*PI, PI32=PI+HALF_PI"
+set "_SIN=a-a*a/1920*a/312500+a*a/1920*a/15625*a/15625*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000"
+set "si=(a=(x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
+set "co=(a=(15708 - x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
+set "_sin="
+
+rem predefine angles for any given ellipse/circle to optimize performance of the macro = 32 points : step 1963
+for /l %%i in (0,1963,%tau%) do (
+	set /a "ci=!co:x=%%i!, so=!si:x=%%i!"
+	set "PRE=!PRE!"!ci! !so!" "	
 )
 
 rem if hei/wid not defined, get dimensions now.
@@ -27,12 +34,23 @@ set @plot=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!"
 	set "$plot=^!$plot^!%\e%[48;%%2m%\e%[%%1H %\e%[0m"%\n%
 )) else set args=
 
+:_ellipse
+rem %@ellipse% x y ch cw <rtn> $ellipse
+set @ellipse=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
+	set "$ellipse=%\e%[48;5;15m"%\n%
+	for %%x in (%pre%) do for /f "tokens=1,2" %%x in ("%%~x") do (%\n%
+		set /a "xa=%%~3 * %%~x/10000 + %%~1", "ya=%%~4 * %%~y/10000 + %%~2"%\n%
+		set "$ellipse=^!$ellipse^!%\e%[^!ya^!;^!xa^!H "%\n%
+	)%\n%
+	set "$ellipse=^!$ellipse^!%\e%[0m"%\n%
+)) else set args=
+
 :_circle
-rem %@circle% x y ch cw <rtn> $circle
-set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
+rem %@circle% x y r <rtn> $circle
+set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
 	set "$circle=%\e%[48;5;15m"%\n%
-	for /l %%a in (0,6,360) do (%\n%
-		set /a "xa=%%~3 * ^!cos:x=%%a^! + %%~1 + 1", "ya=%%~4 * ^!sin:x=%%a^! + %%~2 + 1"%\n%
+	for %%x in (%pre%) do for /f "tokens=1,2" %%x in ("%%~x") do (%\n%
+		set /a "xa=%%~3 * %%~x/10000 + %%~1", "ya=%%~3 * %%~y/10000 + %%~2"%\n%
 		set "$circle=^!$circle^!%\e%[^!ya^!;^!xa^!H "%\n%
 	)%\n%
 	set "$circle=^!$circle^!%\e%[0m"%\n%
@@ -90,7 +108,7 @@ rem %@arc% x y size DEGREES(0-360) arcRotationDegrees(0-360) lineThinness color
 set @arc=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-7" %%1 in ("^!args^!") do (%\n%
 	set "$arc=%\e%[48;5;15m"%\n%
     for /l %%e in (%%~4,%%~6,%%~5) do (%\n%
-		set /a "_x=%%~3 * ^!cos:x=%%e^! + %%~1", "_y=%%~3 * ^!sin:x=%%e^! + %%~2"%\n%
+		set /a "_x=%%~3 * ^!co:x=%%e^!/10000 + %%~1", "_y=%%~3 * ^!si:x=%%e^!/10000 + %%~2"%\n%
 		set "$arc=^!$arc^!%\e%[^!_y^!;^!_x^!H "%\n%
 	)%\n%
 	set "$arc=^!$arc^!%\e%[0m"%\n%

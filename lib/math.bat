@@ -28,10 +28,14 @@ set "Abs=(((x)>>31|1)*(x))"
 set "dist(x2,x1,y2,y1)=( @=x2-x1, $=y2-y1, ?=(((@>>31|1)*@-(($>>31|1)*$))>>31)+1, ?*(2*(@>>31|1)*@-($>>31|1)*$-((@>>31|1)*@-($>>31|1)*$)) + ^^^!?*((@>>31|1)*@-($>>31|1)*$-((@>>31|1)*@-($>>31|1)*$*2)) )"
 set "map=c + (d - c) * (v - a) / (b - a)"
 set "lerp=?=(a + c * (b - a) * 10) / 1000 + a"
+set "interpolate=a + (b - a) * c"
 set "clamp= (leq=((low-(x))>>31)+1)*low  +  (geq=(((x)-high)>>31)+1)*high  +  ^^^!(leq+geq)*(x) "
 set "BBA=(((~(x-a)>>31)&1)&((~(c-x)>>31)&1)&((~(y-b)>>31)&1)&((~(d-y)>>31)&1))"
 set "checkBounds=(((wid-x)>>31)&1)|(((hei-y)>>31)&1)"
 
+(set \n=^^^
+%= This creates an escaped Line Feed - DO NOT ALTER =%
+)
 :_pow
 rem %@pow% base exp <rtn> $pow
 set "pow.buffer=x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x"
