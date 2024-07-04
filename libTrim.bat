@@ -1,6 +1,6 @@
 @echo off & setlocal enableDelayedExpansion
 
-if "%~1" equ "" exit /b
+if "%~1" equ "" ( echo Please drag and drop script into libTrim.bat & pause & exit /b )
 
 md sketch\lib
 
@@ -14,17 +14,18 @@ for /f "delims=" %%i in (%~1) do (
 			if /i "!current:~-4!" equ ".bat" (
 				set "current=!current:~0,-4!"
 			)
+			
+			xcopy lib\!current!.bat sketch\lib
+			
 			if /i "!current:~0,6!" equ "stdlib" (
 				if /i "!line:~-12!" equ "/multithread" (
 					xcopy lib\readKey.bat sketch\lib
 				)
 			)
-			xcopy lib\!current!.bat sketch\lib
 			if /i "!current!" equ "sound" (
 				md sketch\lib\sfx
-				>nul xcopy lib\sfx sketch\lib\sfx
-			)
-			if /i "!current!" equ "cmdwiz" (
+				xcopy lib\sfx sketch\lib\sfx
+			) else if /i "!current!" equ "cmdwiz" (
 				md sketch\lib\cmdwiz
 				xcopy lib\cmdwiz sketch\lib\cmdwiz
 			)
@@ -32,12 +33,9 @@ for /f "delims=" %%i in (%~1) do (
 	)
 )
 
-if "%~2" neq "" (
-	set "outputName=%~2.zip"
-) else (
-	set "outputName=newProject%random%.zip"
-)
-
-tar -cf "%outputName%" "sketch"
+tar -cf "%~n1_[%random%].zip" "sketch"
 
 rmdir /s /q sketch
+
+echo done!
+pause
