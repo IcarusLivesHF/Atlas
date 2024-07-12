@@ -12,15 +12,17 @@ rem define a few buffers
 for /l %%i in (0,1,5) do set "barBuffer=!barBuffer!!barBuffer! " & set "qBuffer=!qBuffer!!qBuffer!q"
 
 rem defined sin/cos (RADIANS)
-set /a "PI=(35500000/113+5)/10, HALF_PI=(35500000/113/2+5)/10, TAU=TWO_PI=2*PI, PI32=PI+HALF_PI"
+set /a "PI=31416, HALF_PI=PI / 2, TAU=TWO_PI=2*PI, PI32=PI+HALF_PI, QUARTER_PI=PI / 4"
 set "_SIN=a-a*a/1920*a/312500+a*a/1920*a/15625*a/15625*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000"
-set "si=(a=(x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
-set "co=(a=(15708 - x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
+set "sin=(a=(x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
+set "cos=(a=(15708 - x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
 set "_sin="
+
+set "sqrt(N)=( M=(N),j=M/(11264)+40, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j+=(M-j*j)>>31 )"
 
 rem predefine angles for any given ellipse/circle to optimize performance of the macro = 32 points : step 1963
 for /l %%i in (0,1963,%tau%) do (
-	set /a "ci=!co:x=%%i!, so=!si:x=%%i!"
+	set /a "ci=!cos:x=%%i!, so=!sin:x=%%i!"
 	set "PRE=!PRE!"!ci! !so!" "	
 )
 
@@ -72,6 +74,35 @@ set @line=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!args^!"
 	set /a "xa=%%~1", "ya=%%~2", "xb=%%~3", "yb=%%~4", "dx=%%~3 - %%~1", "dy=%%~4 - %%~2"%\n%
 	if ^^!dy^^! lss 0 ( set /a "dy=-dy", "stepy=-1" ) else ( set "stepy=1" )%\n%
 	if ^^!dx^^! lss 0 ( set /a "dx=-dx", "stepx=-1" ) else ( set "stepx=1" )%\n%
+	set /a "dx<<=1", "dy<<=1"%\n%
+	if ^^!dx^^! gtr ^^!dy^^! (%\n%
+		set /a "fraction=dy - (dx >> 1)"%\n%
+		for /l %%x in (^^!xa^^!,^^!stepx^^!,^^!xb^^!) do (%\n%
+			if ^^!fraction^^! geq 0 set /a "ya+=stepy", "fraction-=dx"%\n%
+			set /a "fraction+=dy"%\n%
+			set "$line=^!$line^!%\e%[^!ya^!;%%xH "%\n%
+		)%\n%
+	) else (%\n%
+		set /a "fraction=dx - (dy >> 1)"%\n%
+		for /l %%y in (^^!ya^^!,^^!stepy^^!,^^!yb^^!) do (%\n%
+			if ^^!fraction^^! geq 0 set /a "xa+=stepx", "fraction-=dy"%\n%
+			set /a "fraction+=dx"%\n%
+			set "$line=^!$line^!%\e%[%%y;^!xa^!H "%\n%
+		)%\n%
+	)%\n%
+	set "$line=^!$line^!%\e%[0m"%\n%
+)) else set args=
+
+:_line_fast same as %line% only with a larger step rate. Lines will not be solid at longer lengths.
+rem %@line_fast% x0 y0 x1 y1 color <rtn> $line
+set @line_fast=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!args^!") do (%\n%
+	if "%%~5" equ "" ( set "hue=15" ) else ( set "hue=%%~5")%\n%
+	set "$line=%\e%[48;5;^!hue^!m"%\n%
+	set /a "xa=%%~1", "ya=%%~2", "xb=%%~3", "yb=%%~4", "dx=%%~3 - %%~1", "dy=%%~4 - %%~2", "sR=1"%\n%
+	set /a "sR=%sqrt(n):n=(xa-xb)*(xa-xb) + (ya-yb)*(ya-yb)% / 10 / 2"%\n%
+	if ^^!sR^^! lss 1 set "sR=1"%\n%
+	if ^^!dy^^! lss 0 ( set /a "dy=-dy", "stepy=-sR" ) else ( set /a "stepy=sR" )%\n%
+	if ^^!dx^^! lss 0 ( set /a "dx=-dx", "stepx=-sR" ) else ( set /a "stepx=sR" )%\n%
 	set /a "dx<<=1", "dy<<=1"%\n%
 	if ^^!dx^^! gtr ^^!dy^^! (%\n%
 		set /a "fraction=dy - (dx >> 1)"%\n%

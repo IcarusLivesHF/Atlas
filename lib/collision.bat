@@ -26,7 +26,7 @@ rem  LineCircle x1 y1 x2 y2 cx cy r              <rtn> !COLLISION! 0:false or 1:
 set "LineCircle=a=x2-x1,b=y2-y1, len=!sqrt(n):n=a*a + b*b!, dot=(10 * ( (cx-x1)*a + (cy-y1)*b ) / (len * len)), clx=(x1 + dot * a / 10), cly=(y1 + dot * b / 10), d=clx-cx, e=cly-cy, COLLISION=((~(r-!sqrt(n):n=d*d + e*e!)>>31)&1)"
 
 rem  LineLine x1 y1 x2 y2 x3 y3 x4 y4            <rtn> !COLLISION! 0:false or 1:true
-set "LineLine=a=x4-x3,b=y4-y3,c=x1-x3,d=y1-y3,e=x2-x1,f=y2-y1,uA=10 * (a*d - b*c) / (b*e - a*f), uB=10 * (e*d - f*c) / (b*e - a*f), COLLISION=((~(uA-0)>>31)&1) & ((~(10-uA)>>31)&1) & ((~(uB-0)>>31)&1) & ((~(10-uB)>>31)&1)"
+set "LineLine=a=x4-x3,b=y4-y3,c=x1-x3,d=y1-y3,e=x2-x1,f=y2-y1,g=b*e-a*f,uA=10 * (a*d - b*c) / g, uB=10 * (e*d - f*c) / g, COLLISION=((~(uA-0)>>31)&1) & ((~(10-uA)>>31)&1) & ((~(uB-0)>>31)&1) & ((~(10-uB)>>31)&1)"
 
 rem  LineRect x1 y1 rx ry rw rh                  <rtn> !COLLISION! 0:false or 1:true
 set "LineRect=x1=x1,y1=y1,x2=x2,y2=y2, COLLISION=(x3=rx, y3=ry, x4=rx, y4=ry+rh, ^!lineLine^!) | (x3=rx+rw,y3=ry, x4=rx+rw,y4=ry+rh, ^!lineLine^!) | (x3=rx, y3=ry, x4=rx+rw,y4=ry, ^!lineLine^!) | (x3=rx,y3=ry+rh,x4=rx+rw,y4=ry+rh, ^!lineLine^!)"
