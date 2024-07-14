@@ -1,6 +1,3 @@
-@echo off
-setlocal EnableDelayedExpansion
-
 if not defined readKeyEmpty (
 	for /f "delims=" %%A in ('type NUL ^| xcopy /w "%~f0" "%~f0" 2^>nul') do (
 		if not defined readKeyEmpty set "readKeyEmpty=%%A"

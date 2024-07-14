@@ -11,14 +11,19 @@ set "@32bitlimit=0x7FFFFFFF"
 rem define a few buffers
 for /l %%i in (0,1,5) do set "barBuffer=!barBuffer!!barBuffer! " & set "qBuffer=!qBuffer!!qBuffer!q"
 
-rem defined sin/cos (RADIANS)
+rem natural dependencies for GFX below
 set /a "PI=31416, HALF_PI=PI / 2, TAU=TWO_PI=2*PI, PI32=PI+HALF_PI, QUARTER_PI=PI / 4"
 set "_SIN=a-a*a/1920*a/312500+a*a/1920*a/15625*a/15625*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000"
 set "sin=(a=(x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
 set "cos=(a=(15708 - x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
 set "_sin="
-
 set "sqrt(N)=( M=(N),j=M/(11264)+40, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j+=(M-j*j)>>31 )"
+set "Abs=(((x)>>31|1)*(x))"
+
+REM maximum number of iterations: 16*16*16*16*16 = 1,048,576
+Set "While=For /l %%i in (1 1 16)Do If Defined Do.While"
+Set "While=Set Do.While=1&!While! !While! !While! !While! !While! "
+Set "End.While=Set "Do.While=""
 
 rem predefine angles for any given ellipse/circle to optimize performance of the macro = 32 points : step 1963
 for /l %%i in (0,1963,%tau%) do (
@@ -56,6 +61,30 @@ set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^
 		set "$circle=^!$circle^!%\e%[^!ya^!;^!xa^!H "%\n%
 	)%\n%
 	set "$circle=^!$circle^!%\e%[0m"%\n%
+)) else set args=
+
+:_bresenhamCircle
+rem %@bresenhamCircle% cx cy cr COLOR <rtn> !$bresenhamCircle!
+set @bresenhamCircle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
+	if "%%~4" equ "" ( set "hue=15" ) else ( set "hue=%%~4")%\n%
+	set "$bresenhamCircle=%\e%[48;5;^!hue^!m"%\n%
+	set /a "$d=3 - 2 * %%~3, x=0, y=%%~3"%\n%
+	^!While^! (%\n%
+		set /a "a=%%~1 + x, b=%%~2 + y, c=%%~1 - x, d=%%~2 - y, e=%%~1 - y, f=%%~1 + y, g=%%~2 + x, h=%%~2 - x"%\n%
+		set "$bresenhamCircle=^!$bresenhamCircle^!%\e%[^!b^!;^!a^!H "%\n%
+		set "$bresenhamCircle=^!$bresenhamCircle^!%\e%[^!b^!;^!c^!H "%\n%
+		set "$bresenhamCircle=^!$bresenhamCircle^!%\e%[^!d^!;^!a^!H "%\n%
+		set "$bresenhamCircle=^!$bresenhamCircle^!%\e%[^!d^!;^!c^!H "%\n%
+		set "$bresenhamCircle=^!$bresenhamCircle^!%\e%[^!g^!;^!f^!H "%\n%
+		set "$bresenhamCircle=^!$bresenhamCircle^!%\e%[^!g^!;^!e^!H "%\n%
+		set "$bresenhamCircle=^!$bresenhamCircle^!%\e%[^!h^!;^!f^!H "%\n%
+		set "$bresenhamCircle=^!$bresenhamCircle^!%\e%[^!h^!;^!e^!H "%\n%
+		if ^^!$d^^! leq 0 ( set /a "$d=$d + 4 * x + 6"%\n%
+		)     else      set /a "y-=1", "$d=$d + 4 * (x - y) + 10"%\n%
+		if ^^!x^^! GEQ ^^!y^^! ^!End.while^!%\n%
+		set /a "x+=1"%\n%
+	)%\n%
+	set "$bresenhamCircle=^!$bresenhamCircle^!%\e%[0m"%\n%
 )) else set args=
 
 :_rect
@@ -120,6 +149,38 @@ set @line_fast=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!ar
 		)%\n%
 	)%\n%
 	set "$line=^!$line^!%\e%[0m"%\n%
+)) else set args=
+
+:_AAline
+rem %@AAline% x0 x1 y0 y1 <rtn> !$AAline!
+set @AAline=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
+	set "$AAline="%\n%
+	set /a "dx=^!abs:x=%%~3-%%~1^!","dy=^!abs:x=%%~4-%%~2^!","x0=%%~1,y0=%%~2,x1=%%~3,y1=%%~4"%\n%
+	set /a "err=dx-dy", "dxdy=dx+dy","dist=^!sqrt:n=(%%~3-%%~1)*(%%~3-%%~1) + (%%~4-%%~2)*(%%~4-%%~2)^!"%\n%
+	if %%~1 lss %%~3 ( set sx=1 ) else ( set sx=-1 )%\n%
+	if %%~2 lss %%~4 ( set sy=1 ) else ( set sy=-1 )%\n%
+	if ^^!dxdy^^! equ 0 ( set ed=1 ) else ( set /a "ed=^!sqrt:n=dx*dx + dy*dy^!" )%\n%
+	for /l %%i in (1,1,^^!dist^^!) do (%\n%
+		set /a "s=255 - (255 * ^!abs:x=err-dx+dy^! / ed^)", "e2=err, x2=^!x0^!", "$2e2=2 * e2"%\n%
+		set "$AAline=^!$AAline^!%\e%[48;2;^!s^!;^!s^!;^!s^!m%\e%[^!y0^!;^!x0^!H "%\n%
+		if ^^!$2e2^^! geq -^^!dx^^! if ^^!x0^^! neq ^^!x1^^! (%\n%
+			set /a "e2dy=e2 + dy"%\n%
+			if ^^!e2dy^^! lss ^^!ed^^! (%\n%
+				set /a "s=255 - (255 * ^!abs:x=e2+dy^! / ed)", "y0sy=y0 + sy"%\n%
+				set "$AAline=^!$AAline^!%\e%[48;2;^!s^!;^!s^!;^!s^!m%\e%[^!y0sy^!;^!x0^!H "%\n%
+			)%\n%
+			set /a "err-=dy, x0+=sx"%\n%
+		)%\n%
+		if ^^!$2e2^^! leq ^^!dy^^! if ^^!y0^^! neq ^^!y1^^! (%\n%
+			set /a "dxe2=dx - e2"%\n%
+			if ^^!dxe2^^! lss ^^!ed^^! (%\n%
+				set /a "s=255 - (255 * ^!abs:x=dx-e2^! / ed)", "x2sx=x2 + sx"%\n%
+				set "$AAline=^!$AAline^!%\e%[48;2;^!s^!;^!s^!;^!s^!m%\e%[^!y0^!;^!x2sx^!H "%\n%
+			)%\n%
+			set /a "err+=dx, y0+=sy"%\n%
+		)%\n%
+	)%\n%
+	set "$AAline=^!$AAline^!%\e%[0m"%\n%
 )) else set args=
 
 :_bezier

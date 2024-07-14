@@ -21,14 +21,28 @@ if %degreesMode% gtr 0 (
 )
 set "degreesMode="
 
-set "sqrt(N)=( M=(N),j=M/(11264)+40, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j+=(M-j*j)>>31 )"
-set "hypot=( x=(a*a+b*b)/(11*1024)+40, x=((a*a+b*b)/x+x)/2, x=((a*a+b*b)/x+x)/2, x=((a*a+b*b)/x+x)/2, x=((a*a+b*b)/x+x)/2, x=((a*a+b*b)/x+x)/2 )"
+
+rem set /a "n=, out=%sqrt%"
+set "sqrt=( M=(N),j=M/(11264)+40, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j+=(M-j*j)>>31 )"
+
+rem set /a "n=, out=%abs%"
 set "Abs=(((x)>>31|1)*(x))"
-set "dist(x2,x1,y2,y1)=( @=x2-x1, $=y2-y1, ?=(((@>>31|1)*@-(($>>31|1)*$))>>31)+1, ?*(2*(@>>31|1)*@-($>>31|1)*$-((@>>31|1)*@-($>>31|1)*$)) + ^^^!?*((@>>31|1)*@-($>>31|1)*$-((@>>31|1)*@-($>>31|1)*$*2)) )"
+
+rem set /a "x1=, y1=, x2=, y2=, out=%dist%"
+set "dist=( @=x2-x1, $=y2-y1, ?=(((@>>31|1)*@-(($>>31|1)*$))>>31)+1, ?*(2*(@>>31|1)*@-($>>31|1)*$-((@>>31|1)*@-($>>31|1)*$)) + ^^^!?*((@>>31|1)*@-($>>31|1)*$-((@>>31|1)*@-($>>31|1)*$*2)) )"
+
+rem set /a "v=, a=, b=, c=, d=, out=%map%"
 set "map=c + (d - c) * (v - a) / (b - a)"
+
+rem set /a "a=, b=, c=, out=%lerp%"
 set "lerp=?=(a + c * (b - a) * 10) / 1000 + a"
-set "interpolate=a + (b - a) * c"
+
+rem set /a "a=, b=, c=, out=%interpolate%"
+set "interpolate(a,b,c)=a + (b - a) * c"
+
+rem set /a "low=, high=, value=%clamp:x=value%
 set "clamp= (leq=((low-(x))>>31)+1)*low  +  (geq=(((x)-high)>>31)+1)*high  +  ^^^!(leq+geq)*(x) "
+
 
 (set \n=^^^
 %= This creates an escaped Line Feed - DO NOT ALTER =%
