@@ -26,10 +26,6 @@ if "%~2" neq "" (
 if /i "%~3" equ "/multithread" (
 	call :multithread_macros
 )
-
-set "(=(ren "%%~nx0" tmp.bat & ren "lib\setFont2.bat" "%%~nx0""
-set ")=ren "%%~nx0" "lib\setFont2.bat" & ren tmp.bat "%%~nx0")"
-set "failSafe=ren tmp.bat "%%~nx0""
 exit /b
 
 
