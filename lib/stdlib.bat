@@ -13,7 +13,7 @@ set "\c=%\e%[2J"                                       %= \c =%
 set "\h=%\e%[2J%\e%[H"                                 %= \h =%
 <nul set /p "=%\e%[?25l"     & rem hide cursor
 
-set "@32bitlimit=0x7FFFFFFF" & rem 2147483647 or (1 << 31) - 1 or 0x7FFFFFFF
+set "@32bitlimit=0x7FFFFFFF" & rem 2147483647   or   (1<<31)-1   or   0x7FFFFFFF
 
 for /f "skip=2 tokens=2" %%a in ('mode') do if not defined hei (set /a "hei=height=%%a") else if not defined wid set /a "wid=width=%%a"
 
@@ -26,6 +26,10 @@ if "%~2" neq "" (
 if /i "%~3" equ "/multithread" (
 	call :multithread_macros
 )
+
+set "(=(ren "%%~nx0" tmp.bat & ren "lib\setFont2.bat" "%%~nx0""
+set ")=ren "%%~nx0" "lib\setFont2.bat" & ren tmp.bat "%%~nx0")"
+set "failSafe=ren tmp.bat "%%~nx0""
 exit /b
 
 

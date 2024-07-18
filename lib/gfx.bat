@@ -17,28 +17,28 @@ set "_SIN=a-a*a/1920*a/312500+a*a/1920*a/15625*a/15625*a/2560000-a*a/1875*a/1536
 set "sin=(a=(x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
 set "cos=(a=(15708 - x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
 set "_sin="
-set "sqrt(N)=( M=(N),j=M/(11264)+40, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j+=(M-j*j)>>31 )"
-set "Abs=(((x)>>31|1)*(x))"
+set "sqrt=( M=(N),j=M/(11264)+40, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j+=(M-j*j)>>31 )"
 
 REM maximum number of iterations: 16*16*16*16*16 = 1,048,576
 Set "While=For /l %%i in (1 1 16)Do If Defined Do.While"
 Set "While=Set Do.While=1&!While! !While! !While! !While! !While! "
 Set "End.While=Set "Do.While=""
 
-rem predefine angles for any given ellipse/circle to optimize performance of the macro = 32 points : step 1963
+rem predefine angles for any given ellipse/circle to optimize performance of the macro
+REM 32  points : step 1963         64  points : step 981         100 points : step 628
 for /l %%i in (0,1963,%tau%) do (
 	set /a "ci=!cos:x=%%i!, so=!sin:x=%%i!"
-	set "PRE=!PRE!"!ci! !so!" "	
+	set "PRE=!PRE!"!ci! !so!" "
 )
 
 rem if hei/wid not defined, get dimensions now.
 for /f "skip=2 tokens=2" %%a in ('mode') do if not defined hei (set /a "hei=height=%%a") else if not defined wid set /a "wid=width=%%a"
 
 
-:_plot
-rem %@plot% y;x 2/5;0-255;0-255;0-255
-set @plot=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
-	set "$plot=^!$plot^!%\e%[48;%%2m%\e%[%%1H %\e%[0m"%\n%
+:_point
+rem %@point% y;x 2/5;0-255;0-255;0-255
+set @point=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
+	set "$point=^!$point^!%\e%[48;%%2m%\e%[%%1H %\e%[0m"%\n%
 )) else set args=
 
 :_ellipse
@@ -57,7 +57,7 @@ rem %@circle% x y r <rtn> $circle
 set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
 	set "$circle=%\e%[48;5;15m"%\n%
 	for %%x in (%pre%) do for /f "tokens=1,2" %%x in ("%%~x") do (%\n%
-		set /a "xa=%%~3 * %%~x/10000 + %%~1", "ya=%%~3 * %%~y/10000 + %%~2"%\n%
+		set /a "xa=(%%~3+1) * %%~x/10000 + %%~1", "ya=(%%~3+1) * %%~y/10000 + %%~2"%\n%
 		set "$circle=^!$circle^!%\e%[^!ya^!;^!xa^!H "%\n%
 	)%\n%
 	set "$circle=^!$circle^!%\e%[0m"%\n%
@@ -97,27 +97,17 @@ set @rect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!"
 
 :_line
 rem %@line% x0 y0 x1 y1 color <rtn> $line
-set @line=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!args^!") do (%\n%
-	if "%%~5" equ "" ( set "hue=15" ) else ( set "hue=%%~5")%\n%
-	set "$line=%\e%[48;5;^!hue^!m"%\n%
-	set /a "xa=%%~1", "ya=%%~2", "xb=%%~3", "yb=%%~4", "dx=%%~3 - %%~1", "dy=%%~4 - %%~2"%\n%
-	if ^^!dy^^! lss 0 ( set /a "dy=-dy", "stepy=-1" ) else ( set "stepy=1" )%\n%
-	if ^^!dx^^! lss 0 ( set /a "dx=-dx", "stepx=-1" ) else ( set "stepx=1" )%\n%
-	set /a "dx<<=1", "dy<<=1"%\n%
-	if ^^!dx^^! gtr ^^!dy^^! (%\n%
-		set /a "fraction=dy - (dx >> 1)"%\n%
-		for /l %%x in (^^!xa^^!,^^!stepx^^!,^^!xb^^!) do (%\n%
-			if ^^!fraction^^! geq 0 set /a "ya+=stepy", "fraction-=dx"%\n%
-			set /a "fraction+=dy"%\n%
-			set "$line=^!$line^!%\e%[^!ya^!;%%xH "%\n%
-		)%\n%
-	) else (%\n%
-		set /a "fraction=dx - (dy >> 1)"%\n%
-		for /l %%y in (^^!ya^^!,^^!stepy^^!,^^!yb^^!) do (%\n%
-			if ^^!fraction^^! geq 0 set /a "xa+=stepx", "fraction-=dy"%\n%
-			set /a "fraction+=dx"%\n%
-			set "$line=^!$line^!%\e%[%%y;^!xa^!H "%\n%
-		)%\n%
+set @line=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
+	set "$line=%\e%[48;5;15m"%\n%
+	set /a "$x0=%%~1,$y0=%%~2,$x1=%%~3,$y1=%%~4, dx=(((%%~3-%%~1)>>31|1)*(%%~3-%%~1)), dy=-($dy=(((%%~4-%%~2)>>31|1)*(%%~4-%%~2))), err=dx+dy, dist=dx, sx=-1, sy=-1"%\n%
+	if ^^!dx^^! lss ^^!$dy^^! ( set dist=^^!$dy^^! )%\n%
+	if ^^!$x0^^! lss ^^!$x1^^! ( set sx=1 )%\n%
+	if ^^!$y0^^! lss ^^!$y1^^! ( set sy=1 )%\n%
+	for /l %%i in (0,1,^^!dist^^!) do (%\n%
+		set "$line=^!$line^!%\e%[^!$y0^!;^!$x0^!H "%\n%
+		set /a "e2=2 * err"%\n%
+		if ^^!e2^^! geq ^^!dy^^! ( set /a "err+=dy, $x0+=sx" )%\n%
+		if ^^!e2^^! leq ^^!dx^^! ( set /a "err+=dx, $y0+=sy" )%\n%
 	)%\n%
 	set "$line=^!$line^!%\e%[0m"%\n%
 )) else set args=
@@ -128,7 +118,7 @@ set @line_fast=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!ar
 	if "%%~5" equ "" ( set "hue=15" ) else ( set "hue=%%~5")%\n%
 	set "$line=%\e%[48;5;^!hue^!m"%\n%
 	set /a "xa=%%~1", "ya=%%~2", "xb=%%~3", "yb=%%~4", "dx=%%~3 - %%~1", "dy=%%~4 - %%~2", "sR=1"%\n%
-	set /a "sR=%sqrt(n):n=(xa-xb)*(xa-xb) + (ya-yb)*(ya-yb)% / 10 / 2"%\n%
+	set /a "sR=%sqrt:n=(%%~1-%%~3)*(%%~1-%%~3) + (%%~2-%%~4)*(%%~2-%%~4)% / 10 / 2"%\n%
 	if ^^!sR^^! lss 1 set "sR=1"%\n%
 	if ^^!dy^^! lss 0 ( set /a "dy=-dy", "stepy=-sR" ) else ( set /a "stepy=sR" )%\n%
 	if ^^!dx^^! lss 0 ( set /a "dx=-dx", "stepx=-sR" ) else ( set /a "stepx=sR" )%\n%
@@ -155,29 +145,29 @@ set @line_fast=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!ar
 rem %@AAline% x0 x1 y0 y1 <rtn> !$AAline!
 set @AAline=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
 	set "$AAline="%\n%
-	set /a "dx=^!abs:x=%%~3-%%~1^!","dy=^!abs:x=%%~4-%%~2^!","x0=%%~1,y0=%%~2,x1=%%~3,y1=%%~4"%\n%
-	set /a "err=dx-dy", "dxdy=dx+dy","dist=^!sqrt:n=(%%~3-%%~1)*(%%~3-%%~1) + (%%~4-%%~2)*(%%~4-%%~2)^!"%\n%
-	if %%~1 lss %%~3 ( set sx=1 ) else ( set sx=-1 )%\n%
-	if %%~2 lss %%~4 ( set sy=1 ) else ( set sy=-1 )%\n%
-	if ^^!dxdy^^! equ 0 ( set ed=1 ) else ( set /a "ed=^!sqrt:n=dx*dx + dy*dy^!" )%\n%
+	set /a "$dx=(((%%~3-%%~1)>>31|1)*(%%~3-%%~1))","$dy=(((%%~4-%%~2)>>31|1)*(%%~4-%%~2))", "$x0=%%~1,$y0=%%~2,$x1=%%~3,$y1=%%~4", "$err=$dx-$dy", "dxdy=$dx+$dy","dist=$dx"%\n%
+	if ^^!$dx^^! lss ^^!$dy^^! ( set dist=^^!$dy^^! )%\n%
+	if %%~1 lss %%~3 ( set $sx=1 ) else ( set $sx=-1 )%\n%
+	if %%~2 lss %%~4 ( set $sy=1 ) else ( set $sy=-1 )%\n%
+	if ^^!dxdy^^! equ 0 ( set $ed=1 ) else ( set /a "$ed=dist" )%\n%
 	for /l %%i in (1,1,^^!dist^^!) do (%\n%
-		set /a "s=255 - (255 * ^!abs:x=err-dx+dy^! / ed^)", "e2=err, x2=^!x0^!", "$2e2=2 * e2"%\n%
-		set "$AAline=^!$AAline^!%\e%[48;2;^!s^!;^!s^!;^!s^!m%\e%[^!y0^!;^!x0^!H "%\n%
-		if ^^!$2e2^^! geq -^^!dx^^! if ^^!x0^^! neq ^^!x1^^! (%\n%
-			set /a "e2dy=e2 + dy"%\n%
-			if ^^!e2dy^^! lss ^^!ed^^! (%\n%
-				set /a "s=255 - (255 * ^!abs:x=e2+dy^! / ed)", "y0sy=y0 + sy"%\n%
-				set "$AAline=^!$AAline^!%\e%[48;2;^!s^!;^!s^!;^!s^!m%\e%[^!y0sy^!;^!x0^!H "%\n%
+		set /a "$shade=255 - (255 * ((($err-$dx+$dy)>>31|1)*($err-$dx+$dy)) / $ed)", "e2=$err, x2=$x0", "$2e2=2 * e2"%\n%
+		set "$AAline=^!$AAline^!%\e%[48;2;^!$shade^!;^!$shade^!;^!$shade^!m%\e%[^!$y0^!;^!$x0^!H "%\n%
+		if ^^!$2e2^^! geq -^^!$dx^^! (%\n%
+			set /a "e2dy=e2 + $dy"%\n%
+			if ^^!e2dy^^! lss ^^!$ed^^! if ^^!$x0^^! neq ^^!$x1^^! (%\n%
+				set /a "$shade=255 - (255 * (((e2+$dy)>>31|1)*(e2+$dy)) / $ed)", "$y0sy=$y0 + $sy"%\n%
+				set "$AAline=^!$AAline^!%\e%[48;2;^!$shade^!;^!$shade^!;^!$shade^!m%\e%[^!$y0sy^!;^!$x0^!H "%\n%
 			)%\n%
-			set /a "err-=dy, x0+=sx"%\n%
+			set /a "$err-=$dy, $x0+=$sx"%\n%
 		)%\n%
-		if ^^!$2e2^^! leq ^^!dy^^! if ^^!y0^^! neq ^^!y1^^! (%\n%
-			set /a "dxe2=dx - e2"%\n%
-			if ^^!dxe2^^! lss ^^!ed^^! (%\n%
-				set /a "s=255 - (255 * ^!abs:x=dx-e2^! / ed)", "x2sx=x2 + sx"%\n%
-				set "$AAline=^!$AAline^!%\e%[48;2;^!s^!;^!s^!;^!s^!m%\e%[^!y0^!;^!x2sx^!H "%\n%
+		if ^^!$2e2^^! leq ^^!$dy^^! if ^^!$y0^^! neq ^^!$y1^^! (%\n%
+			set /a "dxe2=$dx - e2"%\n%
+			if ^^!dxe2^^! lss ^^!$ed^^! (%\n%
+				set /a "$shade=255 - (255 * ((($dx-e2)>>31|1)*($dx-e2)) / $ed)", "x2sx=x2 + $sx"%\n%
+				set "$AAline=^!$AAline^!%\e%[48;2;^!$shade^!;^!$shade^!;^!$shade^!m%\e%[^!$y0^!;^!x2sx^!H "%\n%
 			)%\n%
-			set /a "err+=dx, y0+=sy"%\n%
+			set /a "$err+=$dx, $y0+=$sy"%\n%
 		)%\n%
 	)%\n%
 	set "$AAline=^!$AAline^!%\e%[0m"%\n%

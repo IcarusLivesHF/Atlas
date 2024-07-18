@@ -20,13 +20,13 @@ REM set /a "x=, out=%randomRangeBoundary%"
 set "randomRangeBoundary=(^!random^! %% (x * 2 + 1) - x)"
 
 REM set /a "x=, y=, out=%randomRange%"
-set "randomRange=(^!random^! %% ((y - (x * 2)) + 1) + x)"
+set "randomRange=(^!random^! %% ((x - (y * 2)) + 1) + y)"
 
 REM set /a "a=, b=, c=, d=, out=%kappa%"
 set "kappa=(((1000*(a+d)/(a+b+c+d)) - ((((10000*(a+c)/(a+b+c+d))*(10000*(a+b)/(a+b+c+d))) + ((10000*(b+d)/(a+b+c+d))*(10000*(c+d)/(a+b+c+d))))/100000)) * 1000 / (1000 - ((((10000*(a+c)/(a+b+c+d))*(10000*(a+b)/(a+b+c+d))) + ((10000*(b+d)/(a+b+c+d))*(10000*(c+d)/(a+b+c+d))))/100000)))"
 
 REM set /a "x=, y=, out=%avg%"
-set "avg=(x&y)+(x^y)/2"
+set "avg=(x & y) + (x ^ y) / 2"
 
 REM set /a "%every:x=FRAMES%" ; must define %frameCount%
 set "every=1/(frameCount%%x)"

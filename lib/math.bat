@@ -38,7 +38,7 @@ rem set /a "a=, b=, c=, out=%lerp%"
 set "lerp=?=(a + c * (b - a) * 10) / 1000 + a"
 
 rem set /a "a=, b=, c=, out=%interpolate%"
-set "interpolate(a,b,c)=a + (b - a) * c"
+set "interpolate=a + (b - a) * c"
 
 rem set /a "low=, high=, value=%clamp:x=value%
 set "clamp= (leq=((low-(x))>>31)+1)*low  +  (geq=(((x)-high)>>31)+1)*high  +  ^^^!(leq+geq)*(x) "
