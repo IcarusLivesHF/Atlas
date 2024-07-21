@@ -17,6 +17,7 @@ set "_SIN=a-a*a/1920*a/312500+a*a/1920*a/15625*a/15625*a/2560000-a*a/1875*a/1536
 set "sin=(a=(x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
 set "cos=(a=(15708 - x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
 set "_sin="
+set "sqrt=( M=(N),q=M/(11264)+40, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q+=(M-q*q)>>31 )"
 
 REM maximum number of iterations: 16*16*16*16*16 = 1,048,576
 Set "While=For /l %%i in (1 1 16)Do If Defined Do.While"
@@ -58,16 +59,9 @@ set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^
 	set /a "$d=3 - 2 * %%~3, x=0, y=%%~3"%\n%
 	^!While^! (%\n%
 		set /a "a=%%~1 + x, b=%%~2 + y, c=%%~1 - x, d=%%~2 - y, e=%%~1 - y, f=%%~1 + y, g=%%~2 + x, h=%%~2 - x"%\n%
-		set "$circle=^!$circle^!%\e%[^!b^!;^!a^!H "%\n%
-		set "$circle=^!$circle^!%\e%[^!b^!;^!c^!H "%\n%
-		set "$circle=^!$circle^!%\e%[^!d^!;^!a^!H "%\n%
-		set "$circle=^!$circle^!%\e%[^!d^!;^!c^!H "%\n%
-		set "$circle=^!$circle^!%\e%[^!g^!;^!f^!H "%\n%
-		set "$circle=^!$circle^!%\e%[^!g^!;^!e^!H "%\n%
-		set "$circle=^!$circle^!%\e%[^!h^!;^!f^!H "%\n%
-		set "$circle=^!$circle^!%\e%[^!h^!;^!e^!H "%\n%
+		set "$circle=^!$circle^!%\e%[^!b^!;^!a^!H %\e%[^!b^!;^!c^!H %\e%[^!d^!;^!a^!H %\e%[^!d^!;^!c^!H %\e%[^!g^!;^!f^!H %\e%[^!g^!;^!e^!H %\e%[^!h^!;^!f^!H %\e%[^!h^!;^!e^!H "%\n%
 		if ^^!$d^^! leq 0 ( set /a "$d=$d + 4 * x + 6"%\n%
-		)     else      set /a "y-=1", "$d=$d + 4 * (x - y) + 10"%\n%
+		) else set /a "y-=1", "$d=$d + 4 * (x - y) + 10"%\n%
 		if ^^!x^^! GEQ ^^!y^^! ^!End.while^!%\n%
 		set /a "x+=1"%\n%
 	)%\n%
@@ -75,11 +69,25 @@ set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^
 )) else set args=
 
 :_rect
-rem %@rect% x y w h <rtn> $rect
+rem %@rect% x y w h <rtn> !$rect!
 set @rect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
 	set "$rect=%\e%[%%~2;%%~1H%\e%(0%\e%7l^!qBuffer:~0,%%~3^!k%\e%8%\e%[B"%\n%
 	for /l %%i in (1,1,%%~4) do set "$rect=^!$rect^!%\e%7x%\e%[%%~3Cx%\e%8%\e%[B"%\n%
 	set "$rect=^!$rect^!m^!qBuffer:~0,%%~3^!j%\e%(B%\e%[0m"%\n%
+)) else set args=
+
+:_roundRect
+rem %@roundrect% x y w h r <rtn> !$roundrect!
+set @roundrect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!args^!") do (%\n%
+    set "$roundrect=%\e%[48;5;15m"%\n%
+    set /a "$s1=%%~1 + %%~5,$t1=%%~1 + %%~3 - %%~5,$s2=%%~2 + %%~5,$t2=%%~2 + %%~4 - %%~5,$e1=%%~2 + %%~4,$e2=%%~1 + %%~3,$e=%%~5 * %%~5"%\n%
+    for /l %%i in (^^!$s1^^!,1,^^!$t1^^!) do set "$roundrect=^!$roundrect^!%\e%[%%~2;%%~iH %\e%[^!$e1^!;%%~iH "%\n%
+    for /l %%i in (^^!$s2^^!,1,^^!$t2^^!) do set "$roundrect=^!$roundrect^!%\e%[%%~i;%%~1H %\e%[%%~i;^!$e2^!H "%\n%
+    for /l %%i in (1,1,%%~5) do (%\n%
+		set /a "$i=%%i-1, dy=($e - $i*$i)/%%~5, $x1=$s1 - %%i,$y1=$s2 - dy,$x2=$t1 + %%i,$y2=$t2 + dy"%\n%
+		set "$roundrect=^!$roundrect^!%\e%[^!$y1^!;^!$x1^!H %\e%[^!$y1^!;^!$x2^!H %\e%[^!$y2^!;^!$x1^!H %\e%[^!$y2^!;^!$x2^!H "%\n%
+    )%\n%
+    set "$roundrect=^!$roundrect^!%\e%[0m"%\n%
 )) else set args=
 
 :_line

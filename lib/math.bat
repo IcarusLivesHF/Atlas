@@ -23,7 +23,7 @@ set "degreesMode="
 
 
 rem set /a "n=, out=%sqrt%"
-set "sqrt=( M=(N),j=M/(11264)+40, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j+=(M-j*j)>>31 )"
+set "sqrt=( M=(N),q=M/(11264)+40, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q+=(M-q*q)>>31 )"
 
 rem set /a "n=, out=%abs%"
 set "Abs=(((x)>>31|1)*(x))"
