@@ -43,14 +43,10 @@ set "interpolate=a + (b - a) * c"
 rem set /a "low=, high=, value=%clamp:x=value%
 set "clamp= (leq=((low-(x))>>31)+1)*low  +  (geq=(((x)-high)>>31)+1)*high  +  ^^^!(leq+geq)*(x) "
 
+rem set /a "out=%randomMagnitude%"
+set "randomMagnitude=(^!random^! %% 2 * 2 - 1) * (^!random^! %% 3 + 1)"
 
-(set \n=^^^
-%= This creates an escaped Line Feed - DO NOT ALTER =%
-)
-:_pow
-rem %@pow% base exp <rtn> $pow
-for /l %%i in (1,1,30) do set "pow.buffer=!pow.buffer!x*"
-set @pow=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
-	set /a "exp=%%~2 * 2 - 1"%\n%
-	for %%a in (^^!exp^^!) do set /a "x=%%~1","$pow=^!pow.buffer:~0,%%a^!"%\n%
-)) else set args=
+REM set /a "x=, n=, %pow%" & %@pow%
+set "pow.buffer=x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x"
+set "pow=$z=n * 2 - 1"
+set "@pow=for %%a in (^!$z^!) do set /a $pow=^!pow.buffer:~0,%%a^!"

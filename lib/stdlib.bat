@@ -22,6 +22,8 @@ if "%~2" neq "" (
 	mode %~1,%~2
 ) 2>nul
 
+chcp 65001>nul
+rem █
 
 if /i "%~3" equ "/multithread" (
 	call :multithread_macros

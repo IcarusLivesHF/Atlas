@@ -68,6 +68,17 @@ set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^
 	set "$circle=^!$circle^!%\e%[0m"%\n%
 )) else set args=
 
+:_ball
+rem %@ball:?=SIZE% <rtn> !$ball:x=COLOR!
+set @ball=(%\n%
+	set "s=?"%\n%
+	if ^^!s^^! lss 3 set s=3%\n%
+	for /l %%i in (1,1,^^!s^^!) do set ".=^!.^!."%\n%
+	set "$ball=%\e%7^!.:~0,-2^!%\e%8%\e%[B%\e%[D"%\n%
+	for /l %%i in (3,1,^^!s^^!) do set "$ball=^!$ball^!%\e%7^!.^!%\e%8%\e%[B"%\n%
+	set "$ball=%\e%[48;5;xm^!$ball^!%\e%[C^!.:~0,-2^!%\e%[0m"%\n%
+)
+
 :_rect
 rem %@rect% x y w h <rtn> !$rect!
 set @rect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
@@ -110,11 +121,11 @@ set @line=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!"
 :_bezier
 rem %@bezier% x1 y1 x2 y2 x3 y3 x4 y4 color <rtn> !$bezier!
 set @bezier=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-9" %%1 in ("^!args^!") do (%\n%
-	if "%%~9" equ "" ( set "hue=15" ) else ( set "hue=%%~9")%\n%
+    if "%%~9" equ "" ( set "hue=15" ) else ( set "hue=%%~9")%\n%
     set "$bezier=%\e%[48;5;^!hue^!m"%\n%
+    set /a "A=%%~1","B=%%~2","C=%%~3","D=%%~4","E=%%~5","F=%%~6","G=%%~7","H=%%~8","I=C-A","J=E-C","K=G-E","L=D-B","M=F-D"%\n%
     for /l %%. in (1,1,50) do (%\n%
-        set /a "_=%%.<<1,N=((%%~1+_*(%%~3-%%~1)*10)/1000+%%~1),O=((%%~3+_*(%%~5-%%~3)*10)/1000+%%~3),P=((%%~2+_*(%%~4-%%~2)*10)/1000+%%~2),Q=((N+_*(O-N)*10)/1000+N),S=((%%~4+_*(%%~6-%%~4)*10)/1000+%%~4),T=((P+_*(S-P)*10)/1000+P),vx=(Q+_*(((O+_*(((%%~5+_*(%%~7-%%~5)*10)/1000+%%~5)-O)*10)/1000+O)-Q)*10)/1000+Q,vy=(T+_*(((S+_*(((%%~6+_*(%%~8-%%~6)*10)/1000+%%~6)-S)*10)/1000+S)-T)*10)/1000+T"%\n%
-        set "$bezier=^!$bezier^!%\e%[^!vy^!;^!vx^!H "%\n%
+        set /a "_=%%.<<1,N=((A+_*I*10)/1000+A),O=((C+_*J*10)/1000+C),P=((B+_*L*10)/1000+B),Q=((N+_*(O-N)*10)/1000+N),S=((D+_*M*10)/1000+D),T=((P+_*(S-P)*10)/1000+P),vx=(Q+_*(((O+_*(((E+_*K*10)/1000+E)-O)*10)/1000+O)-Q)*10)/1000+Q,vy=(T+_*(((S+_*(((F+_*(H-F)*10)/1000+F)-S)*10)/1000+S)-T)*10)/1000+T"%\n%
+        set "$bezier=^!$bezier^![^!vy^!;^!vx^!H%.%"%\n%
     )%\n%
-	set "$bezier=^!$bezier^!%\e%[0m"%\n%
 )) else set args=
