@@ -6,7 +6,7 @@ rem get \n
 %= This creates an escaped Line Feed - DO NOT ALTER =%
 )
 
-for /l %%i in (0,1,4) do set "buffer=!buffer!!buffer!!buffer!!buffer! " & set "qBuffer=!qBuffer!!qBuffer!!qBuffer!q"
+for /l %%i in (0,1,4) do set "$s=!$s!!$s!!$s!!$s! " & set "qBuffer=!qBuffer!!qBuffer!!qBuffer!q"
 
 rem natural dependencies for GFX below
 set /a "PI=31416, HALF_PI=PI / 2, TAU=TWO_PI=2*PI, PI32=PI+HALF_PI, QUARTER_PI=PI / 4"
@@ -20,7 +20,7 @@ rem %@bar% currentValue maxValue MaxlengthOfBar
 set @Bar=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
 	set /a "bv=%%~3*%%~1/%%~2, ot=%%~2 / 3, tt=ot * 2, inv=%%~3 - bv - 1, hue=46, percent=100 * total/bytes"%\n%
 	if %%~1 lss ^^!ot^^! ( set "hue=196" ) else if %%~1 gtr ^^!ot^^! if %%~1 lss ^^!tt^^! ( set "hue=226" )%\n%
-	for /f "tokens=1-3" %%a in ("^!bv^! ^!hue^! ^!inv^!") do set "$bar=[%\e%[48;5;%%~bm^!buffer:~0,%%~a^!%\e%[0m%\e%[%%~cC] %%~1/%%~2 ^!percent^!%%%\e%[0m"%\n%
+	for /f "tokens=1-3" %%a in ("^!bv^! ^!hue^! ^!inv^!") do set "$bar=[%\e%[48;5;%%~bm^!$s:~0,%%~a^!%\e%[0m%\e%[%%~cC] %%~1/%%~2 ^!percent^!%%%\e%[0m"%\n%
 )) else set args=
 
 :_sevenSegmentDisplay

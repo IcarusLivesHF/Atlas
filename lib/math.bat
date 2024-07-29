@@ -47,6 +47,6 @@ rem set /a "out=%randomMagnitude%"
 set "randomMagnitude=(^!random^! %% 2 * 2 - 1) * (^!random^! %% 3 + 1)"
 
 REM set /a "x=, n=, %pow%" & %@pow%
-set "pow.buffer=x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x"
+set "$b=x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x"
 set "pow=$z=n * 2 - 1"
-set "@pow=for %%a in (^!$z^!) do set /a $pow=^!pow.buffer:~0,%%a^!"
+set "@pow=for %%a in (^!$z^!) do set /a $pow=^!$b:~0,%%a^!"

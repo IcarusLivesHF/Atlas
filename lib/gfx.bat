@@ -9,7 +9,7 @@ rem define @32bitlimit if we wasn't already
 set "@32bitlimit=0x7FFFFFFF"
 
 rem define a few buffers
-for /l %%i in (0,1,5) do set "qBuffer=!qBuffer!!qBuffer!q"
+for /l %%i in (0,1,4) do set "$s=!$s!!$s!!$s!!$s! " & set "qBuffer=!qBuffer!!qBuffer!!qBuffer!q"
 
 rem natural dependencies for GFX below
 set /a "PI=31416, HALF_PI=PI / 2, TAU=TWO_PI=2*PI, PI32=PI+HALF_PI, QUARTER_PI=PI / 4"
@@ -83,8 +83,17 @@ set @ball=(%\n%
 rem %@rect% x y w h <rtn> !$rect!
 set @rect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
 	set "$rect=%\e%[%%~2;%%~1H%\e%(0%\e%7l^!qBuffer:~0,%%~3^!k%\e%8%\e%[B"%\n%
-	for /l %%i in (1,1,%%~4) do set "$rect=^!$rect^!%\e%7x%\e%[%%~3Cx%\e%8%\e%[B"%\n%
+	for /l %%i in (3,1,%%~4) do set "$rect=^!$rect^!%\e%7x%\e%[%%~3Cx%\e%8%\e%[B"%\n%
 	set "$rect=^!$rect^!m^!qBuffer:~0,%%~3^!j%\e%(B%\e%[0m"%\n%
+)) else set args=
+
+:_fillRect
+rem %@fillRect% x y w h color <rtn> !$fillRect!
+set @fillRect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!args^!") do (%\n%
+	if "%%~5" neq "" ( set "hue=%%~5" ) else set "hue=15"%\n%
+	set "$fillRect=%\e%[48;5;^!hue^!m%\e%[%%~2;%%~1H%\e%7^!$s:~0,%%~3^!%\e%8%\e%[B"%\n%
+	for /l %%i in (3,1,%%~4) do set "$fillRect=^!$fillRect^!%\e%7^!$s:~0,%%~3^!%\e%8%\e%[B"%\n%
+	set "$fillRect=^!$fillRect^!^!$s:~0,%%~3^!%\e%[0m"%\n%
 )) else set args=
 
 :_roundRect
