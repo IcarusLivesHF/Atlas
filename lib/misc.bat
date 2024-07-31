@@ -62,8 +62,11 @@ set "checkBounds=(((wid-x)>>31)&1)|(((hei-y)>>31)&1)"
 REM set /a "a=,b=, out=%hypot%"
 set "hypot=( M=(a*a+b*b),j=M/(11264)+40, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j=(M/j+j)>>1, j+=(M-j*j)>>31 )"
 
-rem set /a "a1=, b1=, c1=, d1=, a2=, b2=, c2=, d2=, %matrixMul_2x2%"
-set "matrixMul_2x2=$a=a1*a2+b1*c2,  $b=a1*b2+b1*d2,  $c=c1*b2+d1*c2,  $d=c1*b2+d1*d2"
+rem set /a "a1=, b1=, c1=, d1=, a2=, b2=, c2=, d2=, %matrixMul_2x2%" <rtn> !$a!-!$d!
+set "matrixMul_2x2=$a=a1*a2+b1*c2,  $b=a1*b2+b1*d2,  $c=c1*a2+d1*c2,  $d=c1*b2+d1*d2"
+
+REM set /a "a=, b=, c=, d=, e=, f=, g=, h=, i=, j=, k=, l=, m=, n=, o=, p=, q=, r=, %matrixMul_3x3%" <rtn> !$a!-!$i!
+set "matrixMul_3x3=$a=a*j + b*m + c*p, $b=a*k + b*n + c*q, $c=a*l + b*o + c*r, $d=d*j + e*m + f*p, $e=d*k + e*n + f*q, $f=d*l + e*o + f*r, $g=g*j + h*m + i*p, $h=g*k + h*n + i*q, $i=g*l + h*o + i*r"
 
 rem tables for log2 and log10
 set "tab32=0009010A0D15021D0B0E10121619031E080C141C0F111807131B17061A05041F"

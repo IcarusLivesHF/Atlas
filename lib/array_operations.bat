@@ -40,18 +40,32 @@ set @arrayContains=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("
 	)%\n%
 )) else set args=
 
-:_sortFWD
-rem %sort[fwd]:#=stingArray%
-SET "@sort[fwd]=(FOR %%S in (%%#%%) DO @ECHO %%S) ^| SORT"
+:_bubble
+rem %@bubble% %list%;newList
+set @bubble=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2 delims=;" %%1 in ("^!args^!") do (%\n%
+	set "%%~2="%\n%
+	set "c=0"%\n%
+	for %%a in (x %%~1) do set /a "c+=1, n[^!c^!]=%%a"%\n%
+	set /a "cm=c - 1"%\n%
+	for /l %%l in (0,1,^^!cm^^!) do for /l %%c in (1,1,^^!cm^^!) do (%\n%
+		set /a "x=%%c + 1"%\n%
+		for %%x in (^^!x^^!) do if ^^!n[%%c]^^! gtr ^^!n[%%x]^^! set /a "save=n[%%c]", "n[%%c]=n[%%x]", "n[%%x]=save"%\n%
+	)%\n%
+	for /l %%y in (2,1,^^!c^^!) do set "%%~2=^!%%~2^!^!n[%%y]^! "%\n%
+	for %%a in (x %%~1) do set "n[^!c^!]="%\n%
+)) else set args=
 
-:_sortREV
-rem %sort[rev]:#=stingArray%
-SET "@sort[rev]=(FOR %%S in (%%#%%) DO @ECHO %%S) ^| SORT /R"
-
-:_filterFWD
-rem %filter[fwd]:#=stingArray%
-SET "@filter[fwd]=(FOR %%F in (%%#%%) DO @ECHO %%F) ^| SORT /UNIQ"
-
-:_filterREV
-rem %filter[rev]:#=stingArray%
-SET "@filter[rev]=(FOR %%F in (%%#%%) DO @ECHO %%F) ^| SORT /UNIQ /R"
+:selection
+rem %@sort% %list%;newList
+set @selection=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2 delims=;" %%1 in ("^!args^!") do (%\n%
+	set "%%~2="%\n%
+	set "c=0"%\n%
+	for %%a in (x %%~1) do set /a "c+=1", "n[^!c^!]=%%a"%\n%
+	for %%c in (x %%~1) do ( set /a "lowest=1000"%\n%
+		for /l %%n in (^^!c^^!,-1,1) do if ^^!n[%%n]^^! lss ^^!lowest^^! set /a "lowest=n[%%n]", "ln=%%n"%\n%
+		set "n[^!ln^!]=1000"%\n%
+		set "%%~2=^!%%~2^!^!lowest^! "%\n%
+	)%\n%
+	for %%a in (x %%~1) do set "n[^!c^!]="%\n%
+	set "%%~2=^!%%~2:~2^!"%\n%
+)) else set args=
