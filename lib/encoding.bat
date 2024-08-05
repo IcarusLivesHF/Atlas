@@ -1,26 +1,16 @@
-(set \n=^^^
-%= This creates an escaped Line Feed - DO NOT ALTER =%
-)
-
-set "list.hex=0123456789ABCDEF"
-
-:_hex.RGB
-rem %hexToRGB% 1b9dee
-set @hex.RGB=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args:~1,2^! ^!args:~3,2^! ^!args:~5,2^!") do (%\n%
-	set /a "R=0x%%~1", "G=0x%%~2", "B=0x%%~3"%\n%
+:_toHex
+REM %@toHex% INT <rtn> !$hex!
+set "hex.list=0123456789ABCDEF"
+set @toHex=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1" %%1 in ("^!args^!") do (%\n%
+	set /a "dec=%%~1"%\n%
+	set "$hex="%\n%
+	for /L %%N in (1,1,8) do (%\n%
+		set /a "d=dec&15,dec>>=4"%\n%
+		for %%D in (^^!d^^!) do if "^!hex.list:~%%D,1^!" neq "0" set "$hex=^!hex.list:~%%D,1^!^!$hex^!"%\n%
+	)%\n%
 )) else set args=
 
-:_hex.RND.RGB
-rem %hex.rnd.rgb% <rtn> r g b
-set @hex.RND.RGB=( set "hex="%\n%
-	for /l %%i in (1,1,6) do (%\n%
-		set /a "r=^!random^! %% 16"%\n%
-		for %%r in (^^!r^^!) do set "hex=^!hex^!^!list.hex:~%%r,1^!"%\n%
-	)%\n%
-	set /a "R=0x^!hex:~0,2^!", "G=0x^!hex:~2,2^!", "B=0x^!hex:~4,2^!"%\n%
-)
-
-:_hex.Base2 DONT' CALL
+:_hex.Base2
 rem %hexToBase2% 1B out <rtnVar>
 set @hex.Base2=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
 	for /l %%i in (7,-1,0) do (%\n%
@@ -29,7 +19,7 @@ set @hex.Base2=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!ar
 	)%\n%
 )) else set args=
 
-:_hex.Base4 DONT' CALL
+:_hex.Base4
 rem %hexToBase4% 1B out <rtnVar>
 set @hex.Base4=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
 	for /l %%b in (7,-1,0) do (%\n%

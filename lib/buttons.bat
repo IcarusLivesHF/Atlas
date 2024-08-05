@@ -1,7 +1,3 @@
-(set \n=^^^
-%= This creates an escaped Line Feed - DO NOT ALTER =%
-)
-
 :_makeButton
 rem %@makeButton% x y ID 'string'
 set @makeButton=for %%# in (1 2) do if %%#==2 ( for %%i in ("^!args^!") do  for /f "tokens=1,2 delims='" %%1 in ("%%~i") do  for /f "tokens=1-3" %%w in ("%%~1") do (%\n%

@@ -1,17 +1,10 @@
 :turtleGraphics
-for /f %%a in ('echo prompt $E^| cmd') do set "\e=%%a"
-<nul set /p "=%\e%[?25l"
-
-(set \n=^^^
-%= This creates an escaped Line Feed - DO NOT ALTER =%
-)
-
 rem bresenhams line algorithm. Used to draw lines moving "forward"
 call :lineMacro
 
 set "mirrored=y - x"
-set "sin=(a=((x*31416/180)%%62832)+(((x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000) / 10000"
-set "cos=(a=((15708-x*31416/180)%%62832)+(((15708-x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000) / 10000"
+set "sin=(a=((x*31416/180)%%62832)+(((x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000)"
+set "cos=(a=((15708-x*31416/180)%%62832)+(((15708-x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000)"
 
 set /a "DFX=wid / 2",^
        "DFY=hei / 2",^
@@ -35,7 +28,7 @@ if "%~1" neq "" ( set "prefix=%~1" ) else ( set "prefix=turtle" )
 :_turtle.forward
 rem %turtle.forward% 10
 set %prefix%.forward=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
-	set /a "tDFX=(1+%%~1) * ^!cos:x=DFA^! + dfx", "tDFY=(1+%%~1) * ^!sin:x=DFA^! + dfy"%\n%
+	set /a "tDFX=(1+%%~1) * ^!cos:x=DFA^!/10000 + dfx", "tDFY=(1+%%~1) * ^!sin:x=DFA^!/10000 + dfy"%\n%
 	if /i "^!penDown^!" equ "true" (%\n%
 		if ^^!dfx^^! gtr 1 if ^^!dfx^^! lss ^^!wid^^! if ^^!dfy^^! gtr 1 if ^^!dfy^^! lss ^^!hei^^! (%\n%
 		if ^^!tdfx^^! gtr 1 if ^^!tdfx^^! lss ^^!wid^^! if ^^!tdfy^^! gtr 1 if ^^!tdfy^^! lss ^^!hei^^! (%\n%
@@ -48,7 +41,7 @@ set %prefix%.forward=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in 
 :_turtle.backward
 rem %turtle.backward% 10
 set %prefix%.backward=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
-	set /a "tDFX=(1-%%~1) * ^!cos:x=DFA^! + dfx", "tDFY=(1-%%~1) * ^!sin:x=DFA^! + dfy"%\n%
+	set /a "tDFX=(1-%%~1) * ^!cos:x=DFA^!/10000 + dfx", "tDFY=(1-%%~1) * ^!sin:x=DFA^!/10000 + dfy"%\n%
 	if /i "^!penDown^!" equ "true" (%\n%
 		if ^^!dfx^^! gtr 1 if ^^!dfx^^! lss ^^!wid^^! if ^^!dfy^^! gtr 1 if ^^!dfy^^! lss ^^!hei^^! (%\n%
 		if ^^!tdfx^^! gtr 1 if ^^!tdfx^^! lss ^^!wid^^! if ^^!tdfy^^! gtr 1 if ^^!tdfy^^! lss ^^!hei^^! (%\n%
@@ -123,7 +116,7 @@ set %prefix%.circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in (
 	set "turtleGraphics=^!turtleGraphics^!%\e%[48;2;^!turtle.R^!;^!turtle.G^!;^!turtle.B^!m"%\n%
 	if "%%~2" neq "" ( set "cyd=%%~2" ) else set "cyd=%%~1"%\n%
 	for /l %%i in (0,3,360) do (%\n%
-		set /a "cx=%%~1 * ^!cos:x=%%i^! + dfx", "cy=cyd* ^!sin:x=%%i^! + dfy"%\n%
+		set /a "cx=%%~1 * ^!cos:x=%%i^!/10000 + dfx", "cy=cyd* ^!sin:x=%%i^!/10000 + dfy"%\n%
 		if ^^!cx^^! gtr 0 if ^^!cx^^! lss ^^!wid^^! if ^^!cy^^! gtr 0 if ^^!cy^^! lss ^^!hei^^! (%\n%
 			^<nul set /p "turtleGraphics=^!turtleGraphics^!%\e%[^!cy^!;^!cx^!H "%\n%
 		)%\n%
@@ -203,7 +196,7 @@ set "%prefix%.clearScreen=cls & set turtleGraphics="
 
 goto :eof
 :_______________________
-:lineMacro
+:lineMacro bresenhams
 rem line x0 y0 x1 y1 color
 set line=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!args^!") do (%\n%
 	set "$line=[48;2;^!turtle.R^!;^!turtle.G^!;^!turtle.B^!m"%\n%

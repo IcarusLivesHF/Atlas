@@ -2,9 +2,9 @@
 %= This creates an escaped Line Feed - DO NOT ALTER =%
 )
 
-:_shuffleArray
-rem %@shuffleArray% <input:*[]> <len:int>
-set @shuffleArray=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
+:_shuffle[Array]
+rem %@shuffle[Array]% <input:*[]> <len:int>
+set @shuffle[Array]=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
 	for /l %%i in (%%~2,-1,1) do (%\n%
 		set /a "r=^!random^! %% %%i"%\n%
 		set "t=^!%%~1[%%i]^!"%\n%
@@ -15,9 +15,9 @@ set @shuffleArray=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^
 	)%\n%
 )) else set args=
 
-:_reverseArray
-rem %@reverseArray% <input:*[]> <len:int>
-set @reverseArray=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
+:_reverse[Array]
+rem %@reverse[Array]% <input:*[]> <len:int>
+set @reverse[Array]=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
 	set /a "half=%%~2 / 2"%\n%
 	for /l %%i in (0,1,^^!half^^!) do (%\n%
 		set "t=^!%%~1[%%i]^!"%\n%
@@ -30,7 +30,7 @@ set @reverseArray=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^
 )) else set args=
 
 :_arrayContains
-rem %arrayContains% <input:*[]> <len:int>
+rem %arrayContains% <input:*[]> <len:int> "value"
 set @arrayContains=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
 	set "$arrayContains=false"%\n%
 	for /l %%i in (0,1,%%~2) do (%\n%
@@ -40,24 +40,41 @@ set @arrayContains=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("
 	)%\n%
 )) else set args=
 
-:_bubble
-rem %@bubble% %list%;newList
-set @bubble=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2 delims=;" %%1 in ("^!args^!") do (%\n%
+:_arrayToList
+rem %@arrayToList% <input:*[]> <len:int> listName
+set @arrayToList=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
+	set "%%~3="%\n%
+	for /l %%i in (0,1,%%~2) do set "%%~3=^!%%~3^!^!%%~1[%%i]^! "%\n%
+)) else set args=
+
+:_listToArray
+rem %@listToArray% <input:*[]> <len:int> arrayName
+set @listToArray=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
+	set "$i=-1"%\n%
+	for %%i in (^^!%%~1^^!) do (%\n%
+		set /a "$i+=1"%\n%
+		for %%I in (^^!$i^^!) do set "%%~2[%%I]=%%i"%\n%
+	)%\n%
+)) else set args=
+
+:_bubble[List]
+rem %@bubble[list]% %list%;newList
+set @bubble[List]=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2 delims=;" %%1 in ("^!args^!") do (%\n%
 	set "%%~2="%\n%
 	set "c=0"%\n%
 	for %%a in (x %%~1) do set /a "c+=1, n[^!c^!]=%%a"%\n%
 	set /a "cm=c - 1"%\n%
 	for /l %%l in (0,1,^^!cm^^!) do for /l %%c in (1,1,^^!cm^^!) do (%\n%
 		set /a "x=%%c + 1"%\n%
-		for %%x in (^^!x^^!) do if ^^!n[%%c]^^! gtr ^^!n[%%x]^^! set /a "save=n[%%c]", "n[%%c]=n[%%x]", "n[%%x]=save"%\n%
+		for %%x in (^^!x^^!) do if ^^!n[%%c]^^! gtr ^^!n[%%x]^^! set /a "save=n[%%c]","n[%%c]=n[%%x]","n[%%x]=save"%\n%
 	)%\n%
 	for /l %%y in (2,1,^^!c^^!) do set "%%~2=^!%%~2^!^!n[%%y]^! "%\n%
 	for %%a in (x %%~1) do set "n[^!c^!]="%\n%
 )) else set args=
 
-:selection
-rem %@sort% %list%;newList
-set @selection=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2 delims=;" %%1 in ("^!args^!") do (%\n%
+:selection[List]
+rem %@selection[list]% %list%;newList
+set @selection[List]=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2 delims=;" %%1 in ("^!args^!") do (%\n%
 	set "%%~2="%\n%
 	set "c=0"%\n%
 	for %%a in (x %%~1) do set /a "c+=1", "n[^!c^!]=%%a"%\n%

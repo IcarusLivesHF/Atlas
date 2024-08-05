@@ -32,6 +32,9 @@ set "kappa=(((1000*(a+d)/(a+b+c+d)) - ((((10000*(a+c)/(a+b+c+d))*(10000*(a+b)/(a
 REM set /a "%every:x=FRAMES%" ; must define %frameCount%
 set "every=1/(frameCount%%x)"
 
+rem set /a "out=%@avg(?):?=LIST%"   NOTE: LIST must NOT end with whitespace.
+set @avg(?)=((^^^!?: =+^^^!)/(((^^^!?: =^>^>31)+3^>^>1)+((^^^!^>^>31)+3^>^>1)))
+
 REM set /a "x=, out=%sign%"
 set "sign=(x)>>31 | -(x)>>31 & 1"
 
@@ -88,11 +91,3 @@ set @log10=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!
 		if %%~1 lss ^^!p^^! set /a "$log-=1"%\n%
 	)%\n%
 )) else set args=
-
-rem set "list=int int int int int int..." & %@avg%     <rtn> %$avg.float% %$avg.normalized%
-set @avg=(%\n%
-	for %%1 in (^^!list^^!) do set /a "$sum+=%%1, $i+=1"%\n%
-	set /a "$avg=10000 * $sum / $i" ^& set "$=^!$avg^!9876543210"%\n%
-	set /a "$d=^!$:~11,1^!, float=$d - 2, $avg.normalized=$avg / 10000"%\n%
-	for %%f in (^^!float^^!) do set "$avg.float=^!$avg:~0,%%f^!.^!$avg:~%%f^!"%\n%
-)

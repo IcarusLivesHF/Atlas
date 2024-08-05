@@ -1,41 +1,17 @@
-rem get \e
-for /f %%a in ('echo prompt $E^| cmd') do set "\e=%%a"
+rem predefine angles for any given ellipse to optimize performance of the macro
+REM 64  points : step 981
+set "PRE="9999 0" "9952 980" "9808 1950" "9571 2901" "9240 3824" "8821 4711" "8318 5552" "7735 6340" "7075 7067" "6349 7726" "5562 8311" "4721 8815" "3835 9236" "2913 9568" "1962 9806" "992 9950" "12 9999" "-968 9953" "-1938 9810" "-2890 9573" "-3813 9245" "-4700 8827" "-5542 8324" "-6331 7742" "-7059 7084" "-7719 6358" "-8305 5572" "-8810 4732" "-9231 3846" "-9563 2924" "-9803 1973" "-9949 1004" "-9998 24" "-9953 -956" "-9813 -1926" "-9577 -2878" "-9250 -3802" "-8832 -4690" "-8332 -5532" "-7749 -6321" "-7093 -7050" "-6368 -7712" "-5582 -8298" "-4742 -8804" "-3857 -9226" "-2935 -9560" "-1985 -9801" "-1016 -9948" "-36 -9998" "944 -9955" "1915 -9816" "2867 -9580" "3791 -9254" "4679 -8838" "5522 -8338" "6312 -7757" "7042 -7101" "7703 -6377" "8291 -5592" "8798 -4753" "9221 -3868" "9557 -2947" "9799 -1997" "9946 -1028" "9999 -48" "
 
-rem get \n
-(set \n=^^^
-%= This creates an escaped Line Feed - DO NOT ALTER =%
-)
-rem define @32bitlimit if we wasn't already
-set "@32bitlimit=0x7FFFFFFF"
-
-rem define a few buffers
-for /l %%i in (0,1,80) do set "$s=!$s!!$s!  " & set "$q=!$q!!$q!qq"
-
-rem natural dependencies for GFX below
-set /a "PI=31416, HALF_PI=PI / 2, TAU=TWO_PI=2*PI, PI32=PI+HALF_PI, QUARTER_PI=PI / 4"
-set "_SIN=a-a*a/1920*a/312500+a*a/1920*a/15625*a/15625*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000"
-set "sin=(a=(x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
-set "cos=(a=(15708 - x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
-set "_sin="
-set "sqrt=( M=(N),q=M/(11264)+40, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q+=(M-q*q)>>31 )"
-
+:_while
 REM maximum number of iterations: 16*16*16*16*16 = 1,048,576
+rem %while% ( condition %end.while% )
 Set "While=For /l %%i in (1 1 16)Do If Defined Do.While"
 Set "While=Set Do.While=1&!While! !While! !While! !While! !While! "
 Set "End.While=Set "Do.While=""
 
-rem if hei/wid not defined, get dimensions now.
-for /f "skip=2 tokens=2" %%a in ('mode') do (
-		   if not defined hei (set /a "hei=height=%%a"
-	) else if not defined wid  set /a "wid=width=%%a"
-)
-
-rem predefine angles for any given ellipse/circle to optimize performance of the macro
-REM 32  points : step 1963         64  points : step 981         100 points : step 628
-for /l %%i in (0,981,%tau%) do (
-	set /a "ci=!cos:x=%%i!, so=!sin:x=%%i!"
-	set "PRE=!PRE!"!ci! !so!" "
-)
+:_timestamp
+rem %timestamp:?=t1% set /a "dt=t2-t1"
+set timestamp=for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "?=(((1%%a*60)+1%%b)*60+1%%c)*100+1%%d-36610100"
 
 :_concat
 rem %@concat% var var

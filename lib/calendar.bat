@@ -121,4 +121,5 @@ set "date.date=!date.date.name!"
 for %%i in (bx by i r g b name hex found date.offset date.date.name date.monthLoop weekDays barval onethird twoThird hue) do set "%%~i="
 for /f "tokens=1 delims==" %%i in ('set dayColor') do set "%%~i="
 for /f "tokens=1 delims==" %%i in ('set dayDay') do set "%%~i="
+set "barBuffer="
 goto :eof

@@ -1,7 +1,3 @@
-(set \n=^^^
-%= This creates an escaped Line Feed - DO NOT ALTER =%
-)
-
 :_lineInject
 rem %lineInject:?=FILE NAME.EXT% "String":Line#:s
 set @lineInject=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4 delims=:/" %%1 in ("?:^!args:~1^!") do (%\n%

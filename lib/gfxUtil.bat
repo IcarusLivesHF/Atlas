@@ -1,12 +1,3 @@
-rem get \e
-for /f %%a in ('echo prompt $E^| cmd') do set "\e=%%a"
-rem get \n
-(set \n=^^^
-%= This creates an escaped Line Feed - DO NOT ALTER =%
-)
-rem define @32bitlimit if we wasn't already
-set "@32bitlimit=0x7FFFFFFF"
-
 :_@getDim
 rem %@getDim% - get current dimensions of window
 set  @getDim=(%\n%
@@ -45,9 +36,3 @@ set @fps=(%\n%
 	if "^!$sec:~1^!" equ "" set "$sec=0^!$sec^!"%\n%
 	title FPS:^^!fps^^! Time: ^^!$min^^!:^^!$sec^^! Frames: ^^!frameCount^^!/^^!$TT^^!%\n%
 )
-
-:_timeStamp
-rem %@timestamp% var
-set @timeStamp=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
-	for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "%%~1=((((10%%a-1000)*60+(10%%b-1000))*60+(10%%c-1000))*100)+(10%%d-1000)"%\n%
-)) else set args=

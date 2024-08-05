@@ -1,6 +1,3 @@
-(set \n=^^^
-%= This creates an escaped Line Feed - DO NOT ALTER =%
-)
 
 set "cmdwiz=lib\cmdwiz\cmdwiz"
 

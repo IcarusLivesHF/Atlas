@@ -1,8 +1,3 @@
-(set \n=^^^
-%= This creates an escaped Line Feed - DO NOT ALTER       \n =%
-)
-for /f %%a in ('echo prompt $E^| cmd') do set "\e=%%a"
-
 :_timer.start
 REM %@timer.start% no arguements
 set @timer.start=for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "t1=(((1%%a*60)+1%%b)*60+1%%c)*100+1%%d-36610100"
