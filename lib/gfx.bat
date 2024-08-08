@@ -13,10 +13,6 @@ Set "End.While=Set "Do.While=""
 rem %timestamp:?=t1% set /a "dt=t2-t1"
 set timestamp=for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "?=(((1%%a*60)+1%%b)*60+1%%c)*100+1%%d-36610100"
 
-:_concat
-rem %@concat% var var
-set @concat=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do set "%%2=^!%%2^!^!%%~1^!" ) else set args=
-
 :_point
 rem %@point% y;x 2/5;0-255;0-255;0-255
 set @point=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
@@ -88,23 +84,6 @@ set @roundrect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-6" %%1 in ("^!ar
 		set "$roundrect=^!$roundrect^!%\e%[^!$y1^!;^!$x1^!H %\e%[^!$y1^!;^!$x2^!H %\e%[^!$y2^!;^!$x1^!H %\e%[^!$y2^!;^!$x2^!H "%\n%
     )%\n%
     set "$roundrect=^!$roundrect^!%\e%[0m"%\n%
-)) else set args=
-
-:_line
-rem %@line% x0 y0 x1 y1 color <rtn> $line
-set @line=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!args^!") do (%\n%
-	if "%%~5" neq "" ( set "$line=%\e%[48;5;%%~5m" ) else set "$line=%\e%[48;5;15m"%\n%
-	set /a "$x0=%%~1,$y0=%%~2,$x1=%%~3,$y1=%%~4, dx=(((%%~3-%%~1)>>31|1)*(%%~3-%%~1)), dy=-($dy=(((%%~4-%%~2)>>31|1)*(%%~4-%%~2))), err=dx+dy, dist=dx, sx=-1, sy=-1"%\n%
-	if ^^!dx^^! lss ^^!$dy^^! ( set dist=^^!$dy^^! )%\n%
-	if ^^!$x0^^! lss ^^!$x1^^! ( set sx=1 )%\n%
-	if ^^!$y0^^! lss ^^!$y1^^! ( set sy=1 )%\n%
-	for /l %%i in (0,1,^^!dist^^!) do (%\n%
-		set "$line=^!$line^!%\e%[^!$y0^!;^!$x0^!H "%\n%
-		set /a "e2=2 * err"%\n%
-		if ^^!e2^^! geq ^^!dy^^! ( set /a "err+=dy, $x0+=sx" )%\n%
-		if ^^!e2^^! leq ^^!dx^^! ( set /a "err+=dx, $y0+=sy" )%\n%
-	)%\n%
-	set "$line=^!$line^!%\e%[0m"%\n%
 )) else set args=
 
 :_bezier

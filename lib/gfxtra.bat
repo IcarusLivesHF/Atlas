@@ -58,7 +58,7 @@ set @arc=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-7" %%1 in ("^!args^!")
 	set "$arc=^!$arc^!%\e%[0m"%\n%
 )) else set args=
 
-rem MUST CALL lib\gfx to obtain %@line% first
+rem MUST CALL lib\gfxline to obtain %@line% first
 :_triangle
 rem %@triangle% x0 y0 x1 y1 x2 y2 <rtn> !$triangle!
 set @triangle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-6" %%1 in ("^!args^!") do (%\n%
@@ -71,7 +71,7 @@ set @triangle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-6" %%1 in ("^!arg
 	set "$triangle=^!$triangle^!^!$line^!%\e%[0m"%\n%
 )) else set args=
 
-rem MUST CALL lib\gfx to obtain %@line% first
+rem MUST CALL lib\gfxline to obtain %@line% first
 :_quad
 rem %@quad% x0 y0 x1 y1 x2 y2 <rtn> !$quad!
 set @quad=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-8" %%1 in ("^!args^!") do (%\n%
