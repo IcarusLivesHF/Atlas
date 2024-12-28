@@ -1,6 +1,6 @@
 :_getAdmin
 rem %@getAdmin%
-set "getAdmin=(Net session >nul 2>&1)|| (PowerShell start """%~0""" -verb RunAs & exit /b)"
+set "@getAdmin=(Net session >nul 2>&1)|| (PowerShell start """%~0""" -verb RunAs & exit /b)"
 
 :_download
 rem %@download% url file - to remain backward compatible, PowerShell.

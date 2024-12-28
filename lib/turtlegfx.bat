@@ -2,6 +2,12 @@
 rem bresenhams line algorithm. Used to draw lines moving "forward"
 call :lineMacro
 
+REM maximum number of iterations: 16*16*16*16*16 = 1,048,576
+rem %while% ( condition %end.while% )
+Set "While=For /l %%i in (1 1 16)Do If Defined Do.While"
+Set "While=Set Do.While=1&!While! !While! !While! !While! !While! "
+Set "End.While=Set "Do.While=""
+
 set "mirrored=y - x"
 set "sin=(a=((x*31416/180)%%62832)+(((x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000)"
 set "cos=(a=((15708-x*31416/180)%%62832)+(((15708-x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000)"
@@ -27,27 +33,25 @@ if "%~1" neq "" ( set "prefix=%~1" ) else ( set "prefix=turtle" )
 
 :_turtle.forward
 rem %turtle.forward% 10
-set %prefix%.forward=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
-	set /a "tDFX=(1+%%~1) * ^!cos:x=DFA^!/10000 + dfx", "tDFY=(1+%%~1) * ^!sin:x=DFA^!/10000 + dfy"%\n%
+set %prefix%.forward=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1" %%1 in ("^!args^!") do (%\n%
+	set /a "tDFX=(1+(%%~1)) * ^!cos:x=DFA^!/10000 + dfx", "tDFY=(1+(%%~1)) * ^!sin:x=DFA^!/10000 + dfy"%\n%
 	if /i "^!penDown^!" equ "true" (%\n%
-		if ^^!dfx^^! gtr 1 if ^^!dfx^^! lss ^^!wid^^! if ^^!dfy^^! gtr 1 if ^^!dfy^^! lss ^^!hei^^! (%\n%
 		if ^^!tdfx^^! gtr 1 if ^^!tdfx^^! lss ^^!wid^^! if ^^!tdfy^^! gtr 1 if ^^!tdfy^^! lss ^^!hei^^! (%\n%
 		^!line^! ^^!dfx^^! ^^!dfy^^! ^^!tdfx^^! ^^!tdfy^^!%\n%
 		^<nul set /p "turtleGraphics=^!turtleGraphics^!^!$line^!"%\n%
-	)))%\n%
+	))%\n%
 	set /a "dfx=tdfx", "dfy=tdfy"%\n%
 )) else set args=
 
 :_turtle.backward
 rem %turtle.backward% 10
-set %prefix%.backward=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
-	set /a "tDFX=(1-%%~1) * ^!cos:x=DFA^!/10000 + dfx", "tDFY=(1-%%~1) * ^!sin:x=DFA^!/10000 + dfy"%\n%
+set %prefix%.backward=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1" %%1 in ("^!args^!") do (%\n%
+	set /a "tDFX=(1-(%%~1)) * ^!cos:x=DFA^!/10000 + dfx", "tDFY=(1-(%%~1)) * ^!sin:x=DFA^!/10000 + dfy"%\n%
 	if /i "^!penDown^!" equ "true" (%\n%
-		if ^^!dfx^^! gtr 1 if ^^!dfx^^! lss ^^!wid^^! if ^^!dfy^^! gtr 1 if ^^!dfy^^! lss ^^!hei^^! (%\n%
 		if ^^!tdfx^^! gtr 1 if ^^!tdfx^^! lss ^^!wid^^! if ^^!tdfy^^! gtr 1 if ^^!tdfy^^! lss ^^!hei^^! (%\n%
 		^!line^! ^^!dfx^^! ^^!dfy^^! ^^!tdfx^^! ^^!tdfy^^!%\n%
 		^<nul set /p "turtleGraphics=^!turtleGraphics^!^!$line^!"%\n%
-	)))%\n%
+	))%\n%
 	set /a "dfx=tdfx", "dfy=tdfy"%\n%
 )) else set args=
 
@@ -154,6 +158,15 @@ set %prefix%.dot=(%\n%
 		^<nul set /p "turtleGraphics=^!turtleGraphics^!%\e%[48;2;^!turtle.R^!;^!turtle.G^!;^!turtle.B^!m%\e%[^!dfy^!;^!dfx^!H "%\n%
 ))
 
+:_turtle.plot
+rem %turtle.plot% - stamp screen with dot
+set %prefix%.plot=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
+	       if /i "%%~1" equ "x" ( ^<nul set /p "turtleGraphics=^!turtleGraphics^!%\e%[48;2;^!turtle.R^!;^!turtle.G^!;^!turtle.B^!m%\e%[^!dfy^!;^!dfx^!H^!dfx^!"%\n%
+	) else if /i "%%~1" equ "y" ( ^<nul set /p "turtleGraphics=^!turtleGraphics^!%\e%[48;2;^!turtle.R^!;^!turtle.G^!;^!turtle.B^!m%\e%[^!dfy^!;^!dfx^!H^!dfy^!"%\n%
+	) else if /i "%%~1" equ "a" ( ^<nul set /p "turtleGraphics=^!turtleGraphics^!%\e%[48;2;^!turtle.R^!;^!turtle.G^!;^!turtle.B^!m%\e%[^!dfy^!;^!dfx^!H^!dfa^!"%\n%
+	)%\n%
+)) else set args=
+
 :_turtle.screenSize
 REM %turtle.screenSize% wid hei - set screen size
 set %prefix%.screenSize=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
@@ -221,4 +234,20 @@ set line=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!args^!")
 	)%\n%
 	set "$line=^!$line^![0m"%\n%
 )) else set args=
+
 goto :eof
+
+set line=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!args^!") do (%\n%
+	set "$line=[48;2;^!turtle.R^!;^!turtle.G^!;^!turtle.B^!m"%\n%
+	set /a "$x0=%%~1,$y0=%%~2,$x1=%%~3,$y1=%%~4, dx=(((%%~3-%%~1)>>31|1)*(%%~3-%%~1)), dy=-($dy=(((%%~4-%%~2)>>31|1)*(%%~4-%%~2))), err=dx+dy, dist=dx, sx=-1, sy=-1"%\n%
+	if ^^!dx^^! lss ^^!$dy^^! ( set dist=^^!$dy^^! )%\n%
+	if ^^!$x0^^! lss ^^!$x1^^! ( set sx=1 )%\n%
+	if ^^!$y0^^! lss ^^!$y1^^! ( set sy=1 )%\n%
+	for /l %%i in (0,1,^^!dist^^!) do (%\n%
+		set "$line=^!$line^!%\e%[^!$y0^!;^!$x0^!H "%\n%
+		set /a "e2=err<<1"%\n%
+		if ^^!e2^^! geq ^^!dy^^! ( set /a "err+=dy, $x0+=sx" )%\n%
+		if ^^!e2^^! leq ^^!dx^^! ( set /a "err+=dx, $y0+=sy" )%\n%
+	)%\n%
+	set "$line=^!$line^!%\e%[0m"%\n%
+)) else set args=

@@ -68,8 +68,8 @@ set @rect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!"
 rem %@fillRect% x y w h color <rtn> !$fillRect!
 set @fillRect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!args^!") do (%\n%
     if "%%~5" neq "" ( set "$fillrect=%\e%[48;5;%%~5m" ) else set "$fillrect=%\e%[48;5;15m"%\n%
-    set "$fillRect=^!$fillRect^!^!$s:~0,%%4^!"%\n%
-	set "$fillrect=%\e%[%%~2;%%~1H^!$fillrect: =%\e%[%%3X%\e%[B^!%\e%[0m"%\n%
+    set "$fillRect=^!$fillRect^!^!$s:~0,%%4^!%\e%[0m"%\n%
+	set "$fillrect=%\e%[%%~2;%%~1H^!$fillrect: =%\e%[%%3X%\e%[B^!"%\n%
 )) else set args=
 
 :_roundRect
@@ -90,9 +90,17 @@ set @roundrect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-6" %%1 in ("^!ar
 rem %@bezier% x1 y1 x2 y2 x3 y3 x4 y4 color <rtn> !$bezier!
 set @bezier=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-9" %%a in ("^!args^!") do (%\n%
     if "%%~i" equ "" ( set "$bezier=%\e%[48;5;15m" ) else ( set "$bezier=%\e%[48;5;%%~im" )%\n%
-    set /a "I=%%~c-%%~a","J=%%~e-%%~c","K=%%~g-%%~e","L=%%~d-%%~b","M=%%~f-%%~d"%\n%
+    set /a "H=%%~h-%%~f","I=%%~c-%%~a","J=%%~e-%%~c","K=%%~g-%%~e","L=%%~d-%%~b","M=%%~f-%%~d"%\n%
 	for /l %%. in (1,1,50) do (%\n%
-		set /a "_=%%.<<1,N=((%%~a+_*I*10)/1000+%%~a),O=((%%~c+_*J*10)/1000+%%~c),P=((%%~b+_*L*10)/1000+%%~b),Q=((N+_*(O-N)*10)/1000+N),S=((%%~d+_*M*10)/1000+%%~d),T=((P+_*(S-P)*10)/1000+P),vx=(Q+_*(((O+_*(((%%~e+_*K*10)/1000+%%~e)-O)*10)/1000+O)-Q)*10)/1000+Q,vy=(T+_*(((S+_*(((%%~f+_*(%%~h-%%~f)*10)/1000+%%~f)-S)*10)/1000+S)-T)*10)/1000+T"%\n%
+		set /a "_=%%.<<1",^
+		        "N=((%%~a+_*I*10)/1000+%%~a)",^
+		        "O=((%%~c+_*J*10)/1000+%%~c)",^
+				"P=((%%~b+_*L*10)/1000+%%~b)",^
+				"Q=((N+_*(O-N)*10)/1000+N)",^
+				"R=((%%~d+_*M*10)/1000+%%~d)",^
+				"S=((P+_*(R-P)*10)/1000+P)",^
+				"vx=(Q+_*(((O+_*(((%%~e+_*K*10)/1000+%%~e)-O)*10)/1000+O)-Q)*10)/1000+Q",^
+				"vy=(S+_*(((R+_*(((%%~f+_*H*10)/1000+%%~f)-R)*10)/1000+R)-S)*10)/1000+S"%\n%
 		set "$bezier=^!$bezier^!%\e%[^!vy^!;^!vx^!H "%\n%
 	)%\n%
 	set "$bezier=^!$bezier^!%\e%[0m"%\n%

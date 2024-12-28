@@ -14,15 +14,13 @@ for /l %%i in (0,1,80) do set "$s=!$s!!$s!  " & set "$q=!$q!!$q!qq"
 %= This creates an escaped Line Feed - DO NOT ALTER       \n =%
 )
 for /f %%a in ('echo prompt $E^| cmd') do set "\e=%%a" %= \e =%
-set "\c=%\e%[2J"                                       %= \c =%
-set "\h=%\e%[2J%\e%[H"                                 %= \h =%
 (echo %\e%[?25l) &                                     %= hide cursor =%
 
-set "@32bitlimit=(1<<31)-1" & rem 2147483647   or   0x7FFFFFFF
+set /a "@32bitlimit=(1<<31)-1" & rem 2147483647   or   0x7FFFFFFF
 
 for /f "skip=2 tokens=2" %%a in ('mode') do (
-		   if not defined hei (set /a "hei=height=%%a"
-	) else if not defined wid  set /a "wid=width=%%a"
+		   if not defined hei ( set /a "hei=height=%%a"
+	) else if not defined wid   set /a "wid=width=%%a"
 )
 
 if "%~2" neq "" (

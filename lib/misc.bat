@@ -24,7 +24,7 @@ REM set /a "x=, out=%randomRangeBoundary%"
 set "randomRangeBoundary=(^!random^! %% (x * 2 + 1) - x)"
 
 REM set /a "x=, y=, out=%randomRange%"
-set "randomRange=(^!random^! %% ((x - (y * 2)) + 1) + y)"
+set "randomRange=(^!RANDOM^! %% (y - x + 1)) + x"
 
 REM set /a "a=, b=, c=, d=, out=%kappa%"
 set "kappa=(((1000*(a+d)/(a+b+c+d)) - ((((10000*(a+c)/(a+b+c+d))*(10000*(a+b)/(a+b+c+d))) + ((10000*(b+d)/(a+b+c+d))*(10000*(c+d)/(a+b+c+d))))/100000)) * 1000 / (1000 - ((((10000*(a+c)/(a+b+c+d))*(10000*(a+b)/(a+b+c+d))) + ((10000*(b+d)/(a+b+c+d))*(10000*(c+d)/(a+b+c+d))))/100000)))"
@@ -51,7 +51,7 @@ REM set /a "x=, y=, out=%min%"
 set "min=(y - ((((x - y) >> 31) & 1) * (y - x)))"
 
 REM set /a "x=, y=, %swap%"
-set "swap=x^=y, y^=x, x^=y"
+set "swap=(x^=y, y^=x, x^=y)"
 
 REM set /a "x=, y=, out=%cmp%"
 set "cmp=(x-y)>>31|((y-x)>>31&1)"
@@ -75,17 +75,17 @@ rem tables for log2 and log10
 set "tab32=0009010A0D15021D0B0E10121619031E080C141C0F111807131B17061A05041F"
 set "powerOf10=1000000000"
 
-rem %@log2% INT <rtn> $log10
+rem %@log2% INT <rtn> $log
 set @log2=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1" %%1 in ("^!args^!") do (%\n%
 	set /a "v=%%1, v|=(v>>1), v|=(v>>2), v|=(v>>4), v|=(v>>8), v|=(v>>16), index=(((v * 130329821) >> 27) & 31) * 2"%\n%
 	for %%i in (^^!index^^!) do set /a "$log=0x^!tab32:~%%i,2^!"%\n%
 )) else set args=
 
-rem %@log10% INT <rtn> $log10
+rem %@log10% INT <rtn> $log
 set @log10=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
 	set /a "v=%%1, v|=(v>>1), v|=(v>>2), v|=(v>>4), v|=(v>>8), v|=(v>>16), index=(((v * 130329821) >> 27) & 31) * 2"%\n%
 	for %%i in (^^!index^^!) do set /a "$log=0x^!tab32:~%%i,2^!"%\n%
-	set /a "t=(($log + 1) * 1233 >> 12)+1, $log=t-1"%\n%
+	set /a "t=(($log + 1) * 1233 >> 12) + 1, $log=t - 1"%\n%
 	for %%t in (^^!t^^!) do (%\n%
 		set "p=^!powerOf10:~0,%%t^!"%\n%
 		if %%~1 lss ^^!p^^! set /a "$log-=1"%\n%

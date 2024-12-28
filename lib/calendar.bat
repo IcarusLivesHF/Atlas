@@ -21,7 +21,7 @@ set @calendar.click=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1" %%1 in ("^
 rem define a few buffers
 for /l %%i in (0,1,5) do set "barBuffer=!barBuffer!!barBuffer! "
 
-if "%~3" neq "" ( set "color=%~3" ) else set "color=16"
+if "%~3" neq "" ( set "color=%~3" ) else set "color=12"
 
 rem init calendar details set date
 set "totalDaysInMonth.list="01 January 31" "02 February 28" "03 March 31" "04 April 30" "05 May 31" "06 June 30" "07 July 31" "08 August 31" "09 September 30" "10 October 31" "11 November 30" "12 December 31""
@@ -70,11 +70,11 @@ for %%i in (%totalDaysInMonth.list%) do (
 )
 
 set /a "barVal=15 * date.percent.mapped / date.daysInMonth", "onethird=date.daysInMonth / 3", "twoThird=onethird * 2"
-if !date.percent.mapped! lss !onethird! (
+if !barVal! lss !onethird! (
 	set "hue=46"
-) else if !date.percent.mapped! gtr !oneThird! if !date.percent.mapped! lss !twoThird! (
+) else if !barVal! gtr !oneThird! if !barVal! lss !twoThird! (
 	set "hue=226"
-) else if !date.percent.mapped! gtr !twoThird! (
+) else if !barVal! gtr !twoThird! (
 	set "hue=196"
 )
 
@@ -115,7 +115,7 @@ if "%~2" neq "" (
 	set /a "bx=%~1","by=%~2", "bi=%~1 - 1","bj=%~2 - 1"
 ) else set /a "bx=2","by=2", "bi=1","bj=1"
 
-set "$calendar=%\e%[%by%;%bx%H!$calendar!%\e%[0m%\e%8%\e%[8B%\e%[48;5;%color%m[%\e%7%\e%[48;5;!hue!m!barBuffer:~0,%barVal%!%\e%[0m%\e%8%\e%[15C%\e%[48;5;%color%m][%\e%[48;5;%color%;38;5;!hue!m!date.date!%\e%[0m%\e%[48;5;%color%m/!date.daysinmonth!:%\e%[48;5;%color%;38;5;!hue!m!date.percent!%\e%[48;5;%color%m%\e%[0m%\e%[48;5;%color%m%%%\e%[0m%\e%[48;5;%color%m]%\e%[0m"
+set "$calendar=%\e%[%by%;%bx%H!$calendar!%\e%[0m%\e%8%\e%[8B%\e%[48;5;%color%m[%\e%7%\e%[48;5;!hue!m!barBuffer:~0,%barVal%!%\e%[0m%\e%8%\e%[15C%\e%[48;5;%color%m][%\e%[48;5;%color%m!date.date!%\e%[0m%\e%[48;5;%color%m/!date.daysinmonth!:%\e%[48;5;%color%;38;5;!hue!m!date.percent!%\e%[48;5;%color%m%\e%[0m%\e%[48;5;%color%m%%%\e%[0m%\e%[48;5;%color%m]%\e%[0m"
 set "$calendar=!$calendar!%\e%[%bj%;%bi%H%\e%[48;5;%color%m%\e%(0%\e%7lqqqqqqqqqqqqqqqqqqqqqqqqqqqqk%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[B%\e%7tqqqqqqqqqqqqqqqqqqqqqqqqqqqqu%\e%8%\e%[B%\e%7x%\e%[28Cx%\e%8%\e%[Bmqqqqqqqqqqqqqqqqqqqqqqqqqqqqj%\e%(B%\e%[0m"
 set "date.date=!date.date.name!"
 for %%i in (bx by i r g b name hex found date.offset date.date.name date.monthLoop weekDays barval onethird twoThird hue) do set "%%~i="
