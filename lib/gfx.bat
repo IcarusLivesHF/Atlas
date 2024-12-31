@@ -76,9 +76,14 @@ set @fillRect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!arg
 rem %@roundrect% x y w h r color <rtn> !$roundrect!
 set @roundrect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-6" %%1 in ("^!args^!") do (%\n%
     if "%%~6" neq "" ( set "$roundrect=%\e%[48;5;%%~6m" ) else set "$roundrect=%\e%[48;5;15m"%\n%
-    set /a "$s1=%%~1 + %%~5,$t1=%%~1 + %%~3 - %%~5,$s2=%%~2 + %%~5,$t2=%%~2 + %%~4 - %%~5,$e1=%%~2 + %%~4,$e2=%%~1 + %%~3,$e=%%~5 * %%~5"%\n%
-    for /l %%i in (^^!$s1^^!,1,^^!$t1^^!) do set "$roundrect=^!$roundrect^!%\e%[%%~2;%%~iH %\e%[^!$e1^!;%%~iH "%\n%
-    for /l %%i in (^^!$s2^^!,1,^^!$t2^^!) do set "$roundrect=^!$roundrect^!%\e%[%%~i;%%~1H %\e%[%%~i;^!$e2^!H "%\n%
+    set /a "$s1=%%~1 + %%~5",^
+	       "$t1=%%~1 + %%~3 - %%~5",^
+		   "$s2=%%~2 + %%~5",^
+		   "$t2=%%~2 + %%~4 - %%~5",^
+		   "$e=%%~5 * %%~5",^
+		   "$s1t1=(%%~1 + %%~3 - %%~5) - (%%~1 + %%~5)"%\n%
+    set "$roundrect=^!$roundrect^!%\e%[%%~2;^!$s1^!H%\e%[^!$s1t1^!X%\e%[%%~4B%\e%[^!$s1t1^!X"%\n%
+    for /l %%i in (^^!$s2^^!,1,^^!$t2^^!) do set "$roundrect=^!$roundrect^!%\e%[%%~i;%%~1H %\e%[%%~3C "%\n%
     for /l %%i in (1,1,%%~5) do (%\n%
 		set /a "$i=%%i-1, dy=($e - $i*$i)/%%~5, $x1=$s1 - %%i,$y1=$s2 - dy,$x2=$t1 + %%i,$y2=$t2 + dy"%\n%
 		set "$roundrect=^!$roundrect^!%\e%[^!$y1^!;^!$x1^!H %\e%[^!$y1^!;^!$x2^!H %\e%[^!$y2^!;^!$x1^!H %\e%[^!$y2^!;^!$x2^!H "%\n%

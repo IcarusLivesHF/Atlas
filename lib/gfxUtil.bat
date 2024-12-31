@@ -5,10 +5,6 @@ set  @getDim=(%\n%
 	for /f "skip=2 tokens=2" %%a in ('mode') do if not defined hei (set /a "hei=height=%%a") else if not defined wid set /a "wid=width=%%a"%\n%
 )
 
-:_concat
-rem %@concat% var var
-set @concat=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do set "%%2=^!%%2^!^!%%~1^!" ) else set args=
-
 :_delay
 REM %@delay:x=10%
 set "@delay=for /l %%# in (1,x,1000000) do rem"

@@ -117,22 +117,3 @@ set @AAline=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^
 	)%\n%
 	set "$AAline=^!$AAline^!%\e%[0m"%\n%
 )) else set args=
-
-:_gradient
-rem %@gradient% r1 g1 b1 r2 g2 b2 <rtn> !$gradient!
-set @gradient=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-6" %%1 in ("^!args^!") do (%\n%
-    set /a "r1=%%~1,g1=%%~2,b1=%%~3,r2=%%~4,g2=%%~5,b2=%%~6"%\n%
-    set "$gradient=%\e%[48;2;^!r1^!;^!g1^!;^!b1^!m"%\n%
-    for /l %%i in (0,1,%hei%) do (%\n%
-        set /a "lr=r1,lg=g1,lb=b1",^
-		       "c=10 * (%%i - 1) / (hei - 1)",^
-		       "a=r1,b=r2,r1=%lerp%",^
-			   "a=g1,b=g2,g1=%lerp%",^
-			   "a=b1,b=b2,b1=%lerp%"%\n%
-        if ^^!lr^^!^^!lg^^!^^!lb^^! neq ^^!r1^^!^^!g1^^!^^!b1^^! (%\n%
-            set "$gradient=^!$gradient^!%\e%[48;2;^!r1^!;^!g1^!;^!b1^!m%\e%[2K%\e%[E"%\n%
-        ) else (%\n%
-            set "$gradient=^!$gradient^!%\e%[2K%\e%[E"%\n%
-        )%\n%
-    )%\n%
-)) else set args=
