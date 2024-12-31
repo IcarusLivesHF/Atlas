@@ -11,7 +11,7 @@ Set "End.While=Set "Do.While=""
 
 :_timestamp
 rem %timestamp:?=t1% set /a "dt=t2-t1"
-set timestamp=for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "?=(((1%%a*60)+1%%b)*60+1%%c)*100+1%%d-36610100"
+set @timestamp=for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "?=(((1%%a*60)+1%%b)*60+1%%c)*100+1%%d-36610100"
 
 :_point
 rem %@point% y;x 2/5;0-255;0-255;0-255
