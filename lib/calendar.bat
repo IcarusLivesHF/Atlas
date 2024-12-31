@@ -1,5 +1,5 @@
 :_calendar.click
-rem %@calendar.click% calendar.x calendar.y /l1,/l2,/r1,/r2
+rem %@calendar.click% /l1,/l2,/r1,/r2
 set @calendar.click=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1" %%1 in ("^!args^!") do (%\n%
 	for %%i in (^^!date.button.list^^!) do for /f "tokens=1-3 delims=-" %%a in ("%%~i") do (%\n%
 		set /a "cb.x=(%%b * 4) + %~1 - 3", "cb.x0=(%%b * 4) + %~1 - 1 - 3","cb.x1=(%%b * 4) + %~1 + 1 - 3","cb.y=%%c + (%~2 + 1)"%\n%

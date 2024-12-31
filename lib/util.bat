@@ -17,7 +17,7 @@ rem %getlen% var <rtn> $len
 set "@getlen=for %%# in (1 2) do if %%#==2 ( for /f %%1 in ("^^!args^^!") do (set "$=A^^!%%~1^^!" & set "$len=" &  ( for %%] in (4096 2048 1024 512 256 128 64 32 16) do if "^^!$:~%%]^^!" NEQ "" set /a "$len+=%%]" & set "$=^^!$:~%%]^^!" ) & set "$=^^!$:~1^^!FEDCBA9876543210" & set /a $len+=0x^!$:~15,1^! ) ) else set args="
 
 :_string_properties
-rem %string_properties "string" <rtn> $, $_rev $_upp $_low
+rem %string_properties% "string" <rtn> $, $_rev $_upp $_low
 set @string_properties=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1 delims=" %%1 in ("^!args^!") do (%\n%
     set "$_str=%%~1" ^& set "$_str=^!$_str:~1,-1^!" ^& set "$string.upper=^!$_str:~1^!" ^& set "$string.lower=^!$_str:~1^!"%\n%
 	for /l %%b in (10,-1,0) do set /a "$string.length|=1<<%%b" ^& for %%c in (^^!$string.length^^!) do if "^!$_str:~%%c,1^!" equ "" set /a "$string.length&=~1<<%%b"%\n%
