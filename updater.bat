@@ -2,7 +2,7 @@
 
 set "tmpVer=%temp%\version.txt"
 set "remVer=https://raw.githubusercontent.com/IcarusLivesHF/Batch-Libraries/refs/heads/main/lib/version.txt"
-set "gitArchieve=https://github.com/IcarusLivesHF/Batch-Libraries/archive/refs/heads/main.zip"
+set "gitArchive=https://github.com/IcarusLivesHF/Batch-Libraries/archive/refs/heads/main.zip"
 
 if exist "lib\" (
 	curl -s -o "%tmpVer%" "%remVer%"
@@ -22,10 +22,10 @@ if exist "lib\" (
 	mkdir lib\
 	call :download_and_unpack
 )
-exit
+exit /b
 
 :download_and_unpack
-	(curl -L -o Batch-Libraries.zip %gitArchieve%) & cls
+	(curl -L -o Batch-Libraries.zip %gitArchive%) & cls
 	powershell -Command "Expand-Archive -Path 'Batch-Libraries.zip' -DestinationPath '.' -Force"
 	copy /y "Batch-Libraries-main\lib" "%cd%\lib"
 	rmdir /S /Q "Batch-Libraries-main"
