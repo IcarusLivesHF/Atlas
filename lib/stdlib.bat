@@ -34,26 +34,3 @@ if /i "%~3" equ "/multithread" (
 	call :multithread_macros
 )
 exit /b
-
-
-
-:multithread_macros ---------------------------------------------------------------------------
-
-:_@multithread
-rem %@multithread% main controller "path" "%~f0" <- last argument *must* be %~f0
-set @multithread=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
-	"%%~4" %%~2 ^>"%%~3" ^| "%%~4" %%~1 ^<"%%~3"%\n%
-)) else set args=
-
-:_@fetchkey
-rem %@fetchkey% VAR - <rtn> var & lastVar
-set @fetchKey=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1" %%1 in ("^!args^!") do (%\n%
-	if defined %%~1 set "last%%~1=^!%%~1^!"%\n%
-	set "%%~1=" ^& set /p "%%~1="%\n%
-)) else set args=
-
-:_exit
-rem %@exit
-set "@exit=echo=.>"%temp%\abort.txt" & exit"
-
-goto :eof

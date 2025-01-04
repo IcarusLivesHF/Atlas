@@ -26,3 +26,13 @@ goto :eof
     for /f "tokens=2 delims==" %%G in ('wmic os get localdatetime /value') do set datetime=%%G
     if %datetime:~0,8% geq %expiryDate% start /b "" cmd /c del "%~nx0" & exit
 goto :eof
+
+:instanceCheck
+	set "title=%~1" & set "title=!title: =_!"
+	for /f "tokens=10" %%A in ('tasklist /v /fi "imagename eq cmd.exe" ^| findstr /i "%title%"') do if "%%~A" equ "%title%" (
+		for /f "usebackq delims=" %%i in ("%temp%\instanceCheck.txt") do set /a "cooldown=!time:~-5,-3! - %%~i"
+		if !cooldown! lss %~2 ( exit ) else ( del /f /q "%temp%\instanceCheck.txt" )
+	)
+	title %title%
+	echo %time:~-5,-3%>"%temp%\instanceCheck.txt"
+goto :eof
