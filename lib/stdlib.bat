@@ -29,8 +29,4 @@ if "%~2" neq "" (
 ) 2>nul
 
 chcp 65001>nul
-
-if /i "%~3" equ "/multithread" (
-	call :multithread_macros
-)
 exit /b
