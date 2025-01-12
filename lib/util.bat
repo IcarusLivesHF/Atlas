@@ -26,3 +26,29 @@ set @string_properties=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1 delims="
     for %%i in (a b c d e f g h i j k l m n o p q r s t u v w x y z) do set "$string.lower=^!$string.lower:%%i=%%i^!"%\n%
 	set "$_str="%\n%
 )) else set args=
+
+:_modFile
+rem \e edit, \i insert, \a append, \p prepend, \d delete, \b backup
+set @modFile=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5 delims=/\" %%1 in ("^!args:~1^!") do (%\n%
+	set /a "line_num=lines=0"%\n%
+	for /f "delims=: tokens=1" %%i in ('findstr /n "^^" "%%~2"') do set /a "lines+=1"%\n%
+	^< "%%~2" ( for /l %%i in (1,1,^^!lines^^!) do set /p "line[%%i]=" )%\n%
+	^> "temp.txt" (%\n%
+		for /l %%i in (1,1,^^!lines^^!) do (%\n%
+			set /a "line_num+=1"%\n%
+			if ^^!line_num^^! equ %%~1 (%\n%
+				       if "%%~4" equ "e" ( echo %%~3%\n%
+				) else if "%%~4" equ "i" ( echo %%~3^&echo ^^!line[%%i]^^!%\n%
+				) else if "%%~4" equ "a" ( echo ^^!line[%%i]^^!%%~3%\n%
+				) else if "%%~4" equ "p" ( echo %%~3^^!line[%%i]^^!%\n%
+				) else if "%%~4" equ "d" ( rem do nothing %\n%
+				)%\n%
+			) else echo=^^!line[%%i]^^!%\n%
+			set "line[%%i]="%\n%
+		)%\n%
+	)%\n%
+	set "lines="%\n%
+	set "line_num="%\n%
+	if "%%~5" equ "b" copy /y "%%~2" "backup_%%~2"^>nul%\n%
+	move /y "temp.txt" "%%~2"^>nul%\n%
+)) else set args=
