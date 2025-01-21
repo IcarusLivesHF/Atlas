@@ -1,7 +1,7 @@
 for /f "tokens=1 delims==" %%a in ('set') do (
 	set "pre=true"
 	for %%b in (cd Path ComSpec SystemRoot temp windir) do (
-		if "%%a" equ "%%b" set "pre="
+		if /i "%%a" equ "%%b" set "pre="
 	)
 	if defined pre set "%%~a=
 )

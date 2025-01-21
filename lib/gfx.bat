@@ -60,7 +60,7 @@ set @ball=(%\n%
 :_rect
 rem %@rect% x y w h <rtn> !$rect!
 set @rect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
-	set "$rect=^!$q:~0,%%4^!"%\n%
+	set "$rect=^!$q:~0,%%~4^!"%\n%
 	set "$rect=%\e%[%%~2;%%~1H%\e%(0%\e%7l^!$q:~0,%%~3^!k%\e%8%\e%[B^!$rect:q=%\e%7x%\e%[%%3Cx%\e%8%\e%[B^!m^!$q:~0,%%~3^!j%\e%(B%\e%[0m"%\n%
 )) else set args=
 

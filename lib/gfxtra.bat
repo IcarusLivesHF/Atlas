@@ -1,9 +1,13 @@
+
 :_bar
 rem %@bar% currentValue maxValue MaxlengthOfBar
 set @Bar=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
-	set /a "bv=%%~3*%%~1/%%~2, ot=%%~2 / 3, tt=ot * 2, inv=%%~3 - bv - 1, hue=46, percent=100 * %%~1/%%~2"%\n%
-	if %%~1 lss ^^!ot^^! ( set "hue=196" ) else if %%~1 gtr ^^!ot^^! if %%~1 lss ^^!tt^^! ( set "hue=226" )%\n%
-	for /f "tokens=1-3" %%a in ("^!bv^! ^!hue^! ^!inv^!") do set "$bar=[%\e%[48;5;%%~bm^!$s:~0,%%~a^!%\e%[0m%\e%[%%~cC] %%~1/%%~2 ^!percent^!%%%\e%[0m"%\n%
+	set /a "bv=%%~3 * %%~1 / %%~2, ot=%%~2 / 3 + (%%~2 & 1), tt=ot * 2, hue=46, percent=100 * %%~1/%%~2"%\n%
+	if %%~1 gtr ^^!ot^^! set "hue=226"%\n%
+	if %%~1 gtr ^^!tt^^! set "hue=196"%\n%
+	for /f "tokens=1,2" %%a in ("^!bv^! ^!hue^!") do (%\n%
+		set "$bar=[%\e%[48;5;%%~bm%\e%[%%~aX%\e%[0m%\e%[%%~3C] %%~1/%%~2 ^!percent^!%%%\e%[0m"%\n%
+	)%\n%
 )) else set args=
 
 :_sevenSegmentDisplay
