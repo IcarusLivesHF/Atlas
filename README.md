@@ -1,6 +1,19 @@
 # Batch-SubLibraries (Windows 10 or later)
 Windows Batch Library split into sublibraries
 
+
+NOTE:
+
+Clicking the 'Function List' icon in Notepad++
+
+![](https://i.imgur.com/K8A01bd.png)
+
+Will open up the list of functions provided in a given library
+
+![](https://i.imgur.com/esZMcSb.png)
+
+
+
 # Table of Contents
 	This is **NOT** a complete list of functions/abilities provided by these libraries.
 	Please feel free to look inside the source code of any of the library files to see
@@ -235,14 +248,3 @@ command-line interfaces or other types of text-based user interfaces using Windo
 scripting. By providing a range of pre-written functions and macros, the library can help 
 streamline the development process and make it easier to create complex and powerful 
 applications using the command line.
-
-
-NOTE:
-
-Clicking the 'Function List' icon in Notepad++
-
-![](https://i.imgur.com/K8A01bd.png)
-
-Will open up the list of functions provided in a given library
-
-![](https://i.imgur.com/esZMcSb.png)
