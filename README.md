@@ -240,7 +240,9 @@ applications using the command line.
 NOTE:
 
 Clicking the 'Function List' icon in Notepad++
+
 ![](https://i.imgur.com/K8A01bd.png)
 
 Will open up the list of functions provided in a given library
+
 ![](https://i.imgur.com/esZMcSb.png)
