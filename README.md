@@ -14,7 +14,7 @@ A comprehensive Windows Batch Library, split into sublibraries to simplify and s
 ## Table of Contents
 1. [Getting Started](#getting-started)
 2. [Usage Example](#usage-example)
-3. [Library Overview](#library-overview)
+3. [Library Overview](#table-of-contents)
 4. [Purpose of `LibTrim.bat`](#purpose-of-libtrimbat)
 
 ---
@@ -45,9 +45,7 @@ exit
 
 
 
-## Library Overview
-
-# Table of Contents
+## Table of Contents
 	This is **NOT** a complete list of functions/abilities provided by these libraries.
 	Please feel free to look inside the source code of any of the library files to see
 	what else may be available to you.
