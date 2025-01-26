@@ -50,6 +50,17 @@ exit
 	Please feel free to look inside the source code of any of the library files to see
 	what else may be available to you.
 
+ 	This is the primary piece of the library. You *will* need to call lib\stdlib to use any other library.
+
+	call lib\stdlib wid hei /multithread
+		empties environment
+		\n
+		\e
+		@32bitlimit
+		wid/width , hei/height
+		rem if /multithread
+			%@multithread% main controller "path" "%~f0" <- last argument *must* be %~f0
+
 	call lib\3Dbox
 		%@box% x y sizeX sizeY sizeZ angleX angleY angleZ <rtn> !$box!
 
@@ -183,15 +194,6 @@ exit
 		:executionLimit
 		:machineLock
 		:dateExpiry
-
-	call lib\stdlib wid hei /multithread
-		empties environment
-		\n
-		\e
-		@32bitlimit
-		wid/width , hei/height
-		rem if /multithread
-			%@multithread% main controller "path" "%~f0" <- last argument *must* be %~f0
 			
 	call lib\util
 		%@getAdmin%
