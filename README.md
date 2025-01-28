@@ -34,6 +34,7 @@ Will open up the list of functions provided in a given library
 @echo off & setlocal enableDelayedExpansion
 
 call lib\stdlib 80 60
+call lib\gfx
 call lib\math
 
 rem after this line, you have all of the variables and macros from the libraries called above.
@@ -46,6 +47,7 @@ exit
 
 ## Library Overview
 # Table of Contents #
+ ```batch
 	This is **NOT** a complete list of functions/abilities provided by these libraries.
 	Please feel free to look inside the source code of any of the library files to see
 	what else may be available to you.
@@ -227,6 +229,7 @@ exit
 		%turtle.penDown% - begin draw
 		%turtle.penUp% - stop draw
 		%turtle.clearScreen% - clear screen
+```
 
 ## Purpose of `LibTrim.bat`
     + Click and Drag your sketch onto `LibTrim.bat` to zip your sketch project
