@@ -5,6 +5,11 @@ set  @getDim=(%\n%
 	for /f "skip=2 tokens=2" %%a in ('mode') do if not defined hei (set /a "hei=height=%%a") else if not defined wid set /a "wid=width=%%a"%\n%
 )
 
+:_timestamp
+rem %timestamp:?=t1% set /a "dt=t2-t1"
+set @timestamp=for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "?=(((1%%a*60)+1%%b)*60+1%%c)*100+1%%d-36610100"
+
+
 :_delay
 REM %@delay:x=10%
 set "@delay=for /l %%# in (1,x,1000000) do rem"

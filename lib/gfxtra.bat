@@ -10,6 +10,12 @@ set @Bar=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!")
 	)%\n%
 )) else set args=
 
+
+
+
+
+
+
 :_sevenSegmentDisplay
 rem %@sevenSegmentDisplay% x y value color <rtn> $sevenSegmentDisplay
 set /a "segbool[0]=0x7E", "segbool[1]=0x30", "segbool[2]=0x6D", "segbool[3]=0x79", "segbool[4]=0x33", "segbool[5]=0x5B", "segbool[6]=0x5F", "segbool[7]=0x70", "segbool[8]=0x7F", "segbool[9]=0x7B"
@@ -24,33 +30,61 @@ set @sevenSegmentDisplay=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1
 	)%\n%
 )) else set args=
 
+
+
+
+
+
+
 :_msgBox
-rem %@msgBox% ;title;text;x;y;textColor;boxColor;boxLength
-set @msgBox=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-7 delims=;" %%1 in ("^!args:~1^!") do (%\n%
-	if "%%~5" neq "" ( set "t.color=%%~5" ) else ( set "t.color=15" )%\n%
-	if "%%~6" neq "" ( set "box.color=%%~6" ) else ( set "box.color=15" )%\n%
-	if "%%~7" neq "" ( set "msgBox.length=%%~7" ) else ( set "msgBox.length=60" )%\n%
-	set "str=X%%~2"%\n%
-	set "str=^!str:?=^!" ^& set "length=0" ^& for /l %%b in (10,-1,0) do set /a "length|=1<<%%b" ^& for %%c in (^^!length^^!) do if "^!str:~%%c,1^!" equ "" set /a "length&=~1<<%%b"%\n%
-	set /a "msgBox.height=length / msgBox.length + 4", "msgBox.width=msgBox.length - 2"%\n%
-	for /f "tokens=1-3" %%a in ("^!msgBox.width^! ^!msgBox.length^! ^!msgBox.height^!") do (%\n%
-		set "$msgBox=%\e%[38;5;^!box.color^!m%\e%[%%~4;%%~3HÚ%\e%(0^!$q:~0,%%~a^!%\e%(B¿%\e%[%%~bD%\e%[B³%\e%[%%~aC³%\e%[%%~bD%\e%[BÃ%\e%(0^!$q:~0,%%~a^!%\e%(B´%\e%[%%~bD%\e%[B"%\n%
-		for /l %%i in (0,1,%%~c) do set "$msgBox=^!$msgBox^!³%\e%[%%~aC³%\e%[%%~bD%\e%[B"%\n%
-		set "$msgBox=^!$msgBox^!À%\e%(0^!$q:~0,%%~a^!%\e%(BÙ%\e%[0m"%\n%
-	)%\n%
-	set "str=^!str:=?^!"%\n%
-	set /a "textx=%%~3 + 2", "texty=%%~4 + 1", "msgBox.width-=2"%\n%
-	set "$msgBox=^!$msgBox^!%\e%[38;5;^!t.color^!m%\e%[^!texty^!;^!textx^!H%%~1%\e%[^!texty^!;^!textx^!H%\e%[3B"%\n%
-	for /f "tokens=1,2" %%a in ("^!msgBox.width^! ^!msgBox.length^!") do (%\n%
-		for /l %%i in (1,%%~a,^^!length^^!) do (%\n%
-			set "$msgBox=^!$msgBox^!^!str:~%%~i,%%~a^!%\e%[%%~aD%\e%[B"%\n%
+rem x y w tc1 tc2 bc;text;title
+set @msgbox=for %%# in (1 2) do if %%#==2 (%\n%
+	for /f "tokens=1-3 delims=;" %%A in ("^!args^!") do (%\n%
+		set "$string=%%~B"%\n%
+		set "str1=X%%~B"%\n%
+		set "str2=X%%~C"%\n%
+		set /a "$strLen=$len=0"%\n%
+		for /l %%b in (10,-1,0) do (%\n%
+			set /a "$strlen|=1<<%%b", "$len|=1<<%%b"%\n%
+			for /f "tokens=1,2" %%c in ("^!$strlen^! ^!$len^!") do (%\n%
+				if "^!str1:~%%c,1^!" equ "" set /a "$strlen&=~1<<%%b"%\n%
+				if "^!str2:~%%d,1^!" equ "" set /a "$len&=~1<<%%b"%\n%
+		))%\n%
+		for /f "tokens=1-6" %%1 in ("%%~A") do (%\n%
+			set /a "$center=%%~1 + ((%%~3 / 2) - ($len / 2)) - ($len & 1)", "lw=%%~3 - 6"%\n%
+			for %%I in (^^!lw^^!) do for /l %%i in (0,%%I,^^!$strLen^^!) do (%\n%
+				set /a "h+=1", "z=%%i + %%I"%\n%
+				set "curstr=^!$string:~%%i,%%I^!"%\n%
+				for %%z in (^^!z^^!) do (%\n%
+					if "^!$string:~%%z,1^!" neq "" if "^!$string:~%%z,1^!" neq " " if "^!curstr:~-1^!" neq " " (%\n%
+						set "curstr=^!curstr^!-"%\n%
+				))%\n%
+				if "^!curstr:~0,1^!" equ " " set "curstr=^!curstr:~1^!"%\n%
+				set "$textChunk=^!$textChunk^!%\e%7^!curstr^!%\e%8%\e%[B"%\n%
+			)%\n%
+			set /a "sx=%%~1+1", "sy=%%~2+1","h+=6", "lh=h-4", "lw+=3", "lb=lw+1", "la=%%~2+2"%\n%
+			for %%h in (^^!h^^!) do set "$mb=^!$s:~0,%%~h^!%\e%[0m"%\n%
+			set "$msgbox=%\e%[48;5;16m%\e%[^!sy^!;^!sx^!H^!$mb: =%\e%[%%3X%\e%[B^!"%\n%
+			set "$msgbox=^!$msgbox^!%\e%[48;5;%%~6m%\e%[%%~2;%%~1H^!$mb: =%\e%[%%3X%\e%[B^!"%\n%
+			for /f "tokens=1-3" %%i in ("^!lw^! ^!lh^! ^!lb^!") do (%\n%
+				set "$line=%\e%[38;5;15;48;5;%%~6m%\e%[^!la^!;%%~1H^!$s:~0,%%~j^!%\e%[C^!$q:~0,%%~i^!j"%\n%
+				set "$line=^!$line: =%\e%7%\e%[%%~kCx%\e%8%\e%[B^!"%\n%
+			)%\n%
+			for %%i in (^^!lw^^!) do (%\n%
+				set "$msgbox=%\e%(0^!$msgbox^!^!$line^!%\e%(B%\e%[38;5;%%~4m%\e%[%%~2;^!$center^!H%%~C"%\n%
+				set "$msgbox=^!$msgbox^!%\e%[38;5;15m%\e%[^!sy^!;%%~1H %\e%7%\e%(0^!$q:~0,%%i^!%\e%(B%\e%8%\e%[2B "%\n%
+			)%\n%
+			set "$msgbox=^!$msgbox^!%\e%[38;5;%%~5m^!$textChunk^!%\e%[0m"%\n%
 		)%\n%
-	)%\n%
-	set "$msgBox=^!$msgBox^!%\e%[0m%\e%[E"%\n%
-	for %%i in (textx texty str box.color msgbox.height msgbox.width msgbox.length) do set "%%i="%\n%
+		for %%i in ($line $textChunk $string $strlen $len $center str1 str2 curstr sx sy h lh lw la lb) do set "%%~i="%\n%
 )) else set args=
 
-rem MUST CALL lib\math radians
+
+
+
+
+
+
 :_arc
 rem %@arc% x y size DEGREES(0-360) arcRotationDegrees(0-360) lineThinness color
 set @arc=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-7" %%1 in ("^!args^!") do (%\n%
@@ -62,33 +96,11 @@ set @arc=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-7" %%1 in ("^!args^!")
 	set "$arc=^!$arc^!%\e%[0m"%\n%
 )) else set args=
 
-rem MUST CALL lib\gfxline to obtain %@line% first
-:_triangle
-rem %@triangle% x0 y0 x1 y1 x2 y2 <rtn> !$triangle!
-set @triangle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-6" %%1 in ("^!args^!") do (%\n%
-	set "$triangle="%\n%
-	^!@line^! %%~1 %%~2 %%~3 %%~4%\n%
-	set "$triangle=^!$triangle^!^!$line^!"%\n%
-	^!@line^! %%~1 %%~2 %%~5 %%~6%\n%
-	set "$triangle=^!$triangle^!^!$line^!"%\n%
-	^!@line^! %%~3 %%~4 %%~5 %%~6%\n%
-	set "$triangle=^!$triangle^!^!$line^!%\e%[0m"%\n%
-)) else set args=
 
-rem MUST CALL lib\gfxline to obtain %@line% first
-:_quad
-rem %@quad% x0 y0 x1 y1 x2 y2 <rtn> !$quad!
-set @quad=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-8" %%1 in ("^!args^!") do (%\n%
-	set "$quad="%\n%
-	^!@line^! %%~1 %%~2 %%~3 %%~4%\n%
-	set "$quad=^!$quad^!^!$line^!"%\n%
-	^!@line^! %%~1 %%~2 %%~5 %%~6%\n%
-	set "$quad=^!$quad^!^!$line^!"%\n%
-	^!@line^! %%~3 %%~4 %%~7 %%~8%\n%
-	set "$quad=^!$quad^!^!$line^!"%\n%
-	^!@line^! %%~5 %%~6 %%~7 %%~8%\n%
-	set "$quad=^!$quad^!^!$line^!%\e%[0m"%\n%
-)) else set args=
+
+
+
+
 
 :_AAline
 rem %@AAline% x0 x1 y0 y1 <rtn> !$AAline!
@@ -120,4 +132,30 @@ set @AAline=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^
 		)%\n%
 	)%\n%
 	set "$AAline=^!$AAline^!%\e%[0m"%\n%
+)) else set args=
+
+
+
+
+
+
+
+:_bezier
+rem %@bezier% x1 y1 x2 y2 x3 y3 x4 y4 color <rtn> !$bezier!
+set @bezier=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-9" %%a in ("^!args^!") do (%\n%
+    if "%%~i" equ "" ( set "$bezier=%\e%[48;5;15m" ) else ( set "$bezier=%\e%[48;5;%%~im" )%\n%
+    set /a "H=%%~h-%%~f","I=%%~c-%%~a","J=%%~e-%%~c","K=%%~g-%%~e","L=%%~d-%%~b","M=%%~f-%%~d"%\n%
+	for /l %%. in (1,1,50) do (%\n%
+		set /a "_=%%.<<1",^
+		        "N=((%%~a+_*I*10)/1000+%%~a)",^
+		        "O=((%%~c+_*J*10)/1000+%%~c)",^
+				"P=((%%~b+_*L*10)/1000+%%~b)",^
+				"Q=((N+_*(O-N)*10)/1000+N)",^
+				"R=((%%~d+_*M*10)/1000+%%~d)",^
+				"S=((P+_*(R-P)*10)/1000+P)",^
+				"vx=(Q+_*(((O+_*(((%%~e+_*K*10)/1000+%%~e)-O)*10)/1000+O)-Q)*10)/1000+Q",^
+				"vy=(S+_*(((R+_*(((%%~f+_*H*10)/1000+%%~f)-R)*10)/1000+R)-S)*10)/1000+S"%\n%
+		set "$bezier=^!$bezier^!%\e%[^!vy^!;^!vx^!H "%\n%
+	)%\n%
+	set "$bezier=^!$bezier^!%\e%[0m"%\n%
 )) else set args=

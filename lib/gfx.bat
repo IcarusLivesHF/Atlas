@@ -2,6 +2,9 @@ rem predefine angles for any given ellipse to optimize performance of the macro
 REM 64  points : step 981
 set "PRE="9999 0" "9952 980" "9808 1950" "9571 2901" "9240 3824" "8821 4711" "8318 5552" "7735 6340" "7075 7067" "6349 7726" "5562 8311" "4721 8815" "3835 9236" "2913 9568" "1962 9806" "992 9950" "12 9999" "-968 9953" "-1938 9810" "-2890 9573" "-3813 9245" "-4700 8827" "-5542 8324" "-6331 7742" "-7059 7084" "-7719 6358" "-8305 5572" "-8810 4732" "-9231 3846" "-9563 2924" "-9803 1973" "-9949 1004" "-9998 24" "-9953 -956" "-9813 -1926" "-9577 -2878" "-9250 -3802" "-8832 -4690" "-8332 -5532" "-7749 -6321" "-7093 -7050" "-6368 -7712" "-5582 -8298" "-4742 -8804" "-3857 -9226" "-2935 -9560" "-1985 -9801" "-1016 -9948" "-36 -9998" "944 -9955" "1915 -9816" "2867 -9580" "3791 -9254" "4679 -8838" "5522 -8338" "6312 -7757" "7042 -7101" "7703 -6377" "8291 -5592" "8798 -4753" "9221 -3868" "9557 -2947" "9799 -1997" "9946 -1028" "9999 -48" "
 
+
+
+
 :_while
 REM maximum number of iterations: 16*16*16*16*16 = 1,048,576
 rem %while% ( condition %end.while% )
@@ -9,15 +12,23 @@ Set "While=For /l %%i in (1 1 16)Do If Defined Do.While"
 Set "While=Set Do.While=1&!While! !While! !While! !While! !While! "
 Set "End.While=Set "Do.While=""
 
-:_timestamp
-rem %timestamp:?=t1% set /a "dt=t2-t1"
-set @timestamp=for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "?=(((1%%a*60)+1%%b)*60+1%%c)*100+1%%d-36610100"
+
+
+
+
+
 
 :_point
 rem %@point% y;x 2/5;0-255;0-255;0-255
 set @point=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
 	set "$point=^!$point^!%\e%[48;%%2m%\e%[%%1H %\e%[0m"%\n%
 )) else set args=
+
+
+
+
+
+
 
 :_ellipse
 rem %@ellipse% x y ch cw color <rtn> $ellipse
@@ -46,22 +57,43 @@ set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^
 	set "$circle=^!$circle^!%\e%[0m"%\n%
 )) else set args=
 
-:_ball
-rem %@ball:?=SIZE% <rtn> !$ball:x=COLOR!
-set @ball=(%\n%
-	set "s=?"%\n%
-	if ^^!s^^! lss 3 set s=3%\n%
-	for /l %%i in (1,1,^^!s^^!) do set ".=^!.^!."%\n%
-	set "$ball=%\e%7^!.:~0,-2^!%\e%8%\e%[B%\e%[D"%\n%
-	for /l %%i in (3,1,^^!s^^!) do set "$ball=^!$ball^!%\e%7^!.^!%\e%8%\e%[B"%\n%
-	set "$ball=%\e%[48;5;xm^!$ball^!%\e%[C^!.:~0,-2^!%\e%[0m"%\n%
-)
+:_fillCircle
+rem %@fillCircle% cx cy cr COLOR <rtn> !$fillCircle!
+set @fillCircle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
+	if "%%~4" neq "" ( set "$fillCircle=%\e%[48;5;%%~4m" ) else ( set "$fillCircle=%\e%[48;5;15m" )%\n%
+	set /a "rr=%%~3 * %%~3"%\n%
+	for /l %%y in (-%%~3,1,%%~3) do (%\n%
+		set /a "cy=%%~2 + %%y", "sx=0"%\n%
+		for /l %%x in (-%%~3,1,%%~3) do (%\n%
+			set /a "xxyy=%%x*%%x+%%y*%%y"%\n%
+			if ^^!xxyy^^! lss ^^!rr^^! (%\n%
+				if not defined cx set /a "cx=%%~1 + %%x"%\n%
+				set /a "sx+=1"%\n%
+			)%\n%
+		)%\n%
+		if ^^!sx^^! gtr 0 (%\n%
+			set "$fillCircle=^!$fillCircle^!%\e%[^!cy^!;^!cx^!H%\e%[^!sx^!X"%\n%
+			set "cx="%\n%
+		)%\n%
+	)%\n%
+	set "$fillCircle=^!$fillCircle^!%\e%[0m"%\n%
+)) else set args=
+
+
+
+
+
+
 
 :_rect
 rem %@rect% x y w h <rtn> !$rect!
 set @rect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
-	set "$rect=^!$q:~0,%%~4^!"%\n%
-	set "$rect=%\e%[%%~2;%%~1H%\e%(0%\e%7l^!$q:~0,%%~3^!k%\e%8%\e%[B^!$rect:q=%\e%7x%\e%[%%3Cx%\e%8%\e%[B^!m^!$q:~0,%%~3^!j%\e%(B%\e%[0m"%\n%
+	set /a "$w=%%~3-2", "$h=%%~4-2"%\n%
+	for /f "tokens=1,2" %%A in ("^!$w^! ^!$h^!") do (%\n%
+		set "$rect=^!$q:~0,%%~B^!"%\n%
+		set "$rect=%\e%[%%~2;%%~1H%\e%(0%\e%7l^!$q:~0,%%~A^!k%\e%8%\e%[B^!$rect:q=%\e%7x%\e%[%%~ACx%\e%8%\e%[B^!m^!$q:~0,%%~A^!j%\e%(B%\e%[0m"%\n%
+	)%\n%
+	set "$w=" ^& set "$h="%\n%
 )) else set args=
 
 :_fillRect
@@ -91,22 +123,38 @@ set @roundrect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-6" %%1 in ("^!ar
     set "$roundrect=^!$roundrect^!%\e%[0m"%\n%
 )) else set args=
 
-:_bezier
-rem %@bezier% x1 y1 x2 y2 x3 y3 x4 y4 color <rtn> !$bezier!
-set @bezier=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-9" %%a in ("^!args^!") do (%\n%
-    if "%%~i" equ "" ( set "$bezier=%\e%[48;5;15m" ) else ( set "$bezier=%\e%[48;5;%%~im" )%\n%
-    set /a "H=%%~h-%%~f","I=%%~c-%%~a","J=%%~e-%%~c","K=%%~g-%%~e","L=%%~d-%%~b","M=%%~f-%%~d"%\n%
-	for /l %%. in (1,1,50) do (%\n%
-		set /a "_=%%.<<1",^
-		        "N=((%%~a+_*I*10)/1000+%%~a)",^
-		        "O=((%%~c+_*J*10)/1000+%%~c)",^
-				"P=((%%~b+_*L*10)/1000+%%~b)",^
-				"Q=((N+_*(O-N)*10)/1000+N)",^
-				"R=((%%~d+_*M*10)/1000+%%~d)",^
-				"S=((P+_*(R-P)*10)/1000+P)",^
-				"vx=(Q+_*(((O+_*(((%%~e+_*K*10)/1000+%%~e)-O)*10)/1000+O)-Q)*10)/1000+Q",^
-				"vy=(S+_*(((R+_*(((%%~f+_*H*10)/1000+%%~f)-R)*10)/1000+R)-S)*10)/1000+S"%\n%
-		set "$bezier=^!$bezier^!%\e%[^!vy^!;^!vx^!H "%\n%
+
+
+
+
+
+
+
+:_triangle
+rem %@triangle% x1 y1 x2 y2 x3 y3 color <rtn> !$triangle!
+set @triangle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-8" %%1 in ("^!args^!") do (%\n%
+	set /a "$x1=%%~1, $y1=%%~2, $x2=%%~3, $y2=%%~4, $x3=%%~5, $y3=%%~6"%\n%
+	if ^^!$y1^^! gtr ^^!$y2^^! ( set /a "$x1^^=$x2, $x2^^=$x1, $x1^^=$x2, $y1^^=$y2, $y2^^=$y1, $y1^^=$y2" )%\n%
+	if ^^!$y1^^! gtr ^^!$y3^^! ( set /a "$x1^^=$x3, $x3^^=$x1, $x1^^=$x3, $y1^^=$y3, $y3^^=$y1, $y1^^=$y3" )%\n%
+	if ^^!$y2^^! gtr ^^!$y3^^! ( set /a "$x2^^=$x3, $x3^^=$x2, $x2^^=$x3, $y2^^=$y3, $y3^^=$y2, $y2^^=$y3" )%\n%
+	set /a "$d1=($x2 - $x1), $d2=($x3 - $x1), $d3=($x3 - $x2)"%\n%
+	set "$triangle=%\e%[48;5;%%~7m"%\n%
+	for /L %%y in (^^!$y1^^!,1,^^!$y3^^!) do ( %\n%
+		if %%y lss ^^!$y2^^! ( %\n%
+			if ^^!$y1^^! equ ^^!$y2^^! (set /a "$xs=$x1") else set /a "$xs=$x1+(%%y-$y1)*$d1 / ($y2 - $y1)"%\n%
+			if ^^!$y1^^! equ ^^!$y3^^! (set /a "$xe=$x1") else set /a "$xe=$x1+(%%y-$y1)*$d2 / ($y3 - $y1)"%\n%
+		) else ( %\n%
+			if ^^!$y2^^! equ ^^!$y3^^! (set /a "$xs=$x2") else set /a "$xs=$x2+(%%y-$y2)*$d3 / ($y3 - $y2)"%\n%
+			if ^^!$y1^^! equ ^^!$y3^^! (set /a "$xe=$x1") else set /a "$xe=$x1+(%%y-$y1)*$d2 / ($y3 - $y1)"%\n%
+		)%\n%
+		if ^^!$xs^^! gtr ^^!$xe^^! (	set /a "$dx=$xs-$xe+1"%\n%
+					if ^^!$xe^^! lss 1 set /a "$dx=$dx-(-$xe+1), $xe=1"%\n%
+					set "$triangle=^!$triangle^!%\e%[%%y;^!$xe^!H%\e%[^!$dx^!X"%\n%
+			) else (%\n%
+					set /a "$dx=$xe-$xs+1"%\n%
+					if ^^!$xs^^! lss 1 set /a "$dx=$dx-(-$xs+1), $xs=1"%\n%
+					set "$triangle=^!$triangle^!%\e%[%%y;^!$xs^!H%\e%[^!$dx^!X"%\n%
+		)%\n%
 	)%\n%
-	set "$bezier=^!$bezier^!%\e%[0m"%\n%
+	if "%%~8" neq "" set "$triStrip=^!$triStrip^!^!$triangle^!"%\n%
 )) else set args=
