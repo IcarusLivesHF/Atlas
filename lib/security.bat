@@ -36,3 +36,17 @@ goto :eof
 	title %title%
 	echo %time:~-5,-3%>"%temp%\instanceCheck.txt"
 goto :eof
+
+:timeWindow
+set "startTime=09:00"
+set "endTime=17:00"
+
+set "currentTime=%time:~0,5%"
+if "%currentTime%" lss "%startTime%" (
+    echo [ERROR] Outside allowed time window. Exiting.
+    timout /t 2 >nul & exit
+) else if "%currentTime%" geq "%endTime%" (
+    echo [ERROR] Outside allowed time window. Exiting.
+    timout /t 2 >nul & exit
+)
+goto :eof

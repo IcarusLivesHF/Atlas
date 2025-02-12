@@ -17,10 +17,14 @@ if %degreesMode% gtr 0 (
 set "degreesMode="
 set "rotate=^!cos:x=theta^! / 10000 + 1 * ^!sin:x=theta^! / 10000"
 
+set "Atan(x)=( r=x, t=((((r>>31|1)*r)-1077)>>31)+1, y=(r>>31)+1, y=10000000/(y*(r-((r-1)&((r-1)>>31)))+(1-y)*(r-((r+1)&((-1-r)>>31)))), t*(((r>>31|-r>>31&1)*90000-((y*100000+43205*y/2000*y/10000*y/5)/(((1000000000+7649*y/1000*y)+(584*y/50*y/10000*y/10000*y/10/2) )/100000) )*180*100/31416)/10)+(1-t)*((r*1000000+43205*r/100*r/1000*r)/(((1000000000+7649*r/10*r)+(584*r/10*r/100*r/1000*r/10))/100000)*180*100/314159) )"
+
+set "atan2(x,y)=I0=(((~(0 - x) >> 31) & 1) & ((~(x - 0) >> 31) & 1)), $atan2=I0 * (9000 * ((y >> 31) - ((-y) >> 31))) + (1 - I0) * (^!Atan(x):x=(1000 * y) / x^! + 18000 * (-(x >> 31)) * (1 + 2 * (y >> 31)))"
+
 rem set /a "n=, out=%sqrt%"
 set "sqrt=( M=(N),q=M/(11264)+40, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q+=(M-q*q)>>31 )"
 
-rem set /a "n=, out=%abs%"
+rem set /a "x=, out=%abs%"
 set "Abs=(((x)>>31|1)*(x))"
 
 rem set /a "x1=, y1=, x2=, y2=, out=%dist%"
@@ -41,7 +45,7 @@ set "clamp= (leq=((low-(x))>>31)+1)*low  +  (geq=(((x)-high)>>31)+1)*high  +  ^^
 rem set /a "out=%randomMagnitude%"
 set "randomMagnitude=(^!random^! %% 2 * 2 - 1) * (^!random^! %% 3 + 1)"
 
-REM set /a "x=, n=, %pow%" & %@pow%
+REM set /a "x=, n=, %pow%" & %@pow% <rtn> !$pow!
 set "$b=x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x"
 set "pow=$z=n * 2 - 1"
 set "@pow=for %%a in (^!$z^!) do set /a $pow=^!$b:~0,%%a^!"

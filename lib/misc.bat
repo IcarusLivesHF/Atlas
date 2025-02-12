@@ -36,7 +36,7 @@ rem set /a "out=%@avg(?):?=LIST%"   NOTE: LIST must NOT end with whitespace.
 set @avg(?)=((^^^!?: =+^^^!)/(((^^^!?: =^>^>31)+3^>^>1)+((^^^!^>^>31)+3^>^>1)))
 
 REM set /a "x=, out=%sign%"
-set "sign=(x)>>31 | -(x)>>31 & 1"
+set "sgn=(x)>>31 | -(x)>>31 & 1"
 
 REM set /a "a=, b=, c=, d=, out=%getState%"
 set "getState=a * 8 + b * 4 + c * 2 + d * 1"

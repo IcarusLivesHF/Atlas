@@ -5,12 +5,7 @@ set "PRE="9999 0" "9952 980" "9808 1950" "9571 2901" "9240 3824" "8821 4711" "83
 
 
 
-:_while
-REM maximum number of iterations: 16*16*16*16*16 = 1,048,576
-rem %while% ( condition %end.while% )
-Set "While=For /l %%i in (1 1 16)Do If Defined Do.While"
-Set "While=Set Do.While=1&!While! !While! !While! !While! !While! "
-Set "End.While=Set "Do.While=""
+
 
 
 
