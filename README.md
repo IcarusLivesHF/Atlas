@@ -1,4 +1,4 @@
-# Batch-SubLibraries (Windows 10 or later)
+# Windows Batch Libraries (Windows 10 or later)
 
 A comprehensive Windows Batch Library, split into sublibraries to simplify and streamline the creation of command-line interfaces (CLIs) and text-based user interfaces (TUIs).
 
