@@ -53,25 +53,32 @@ set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^
 )) else set args=
 
 :_fillCircle
-rem %@fillCircle% cx cy cr COLOR <rtn> !$fillCircle!
-set @fillCircle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
-	if "%%~4" neq "" ( set "$fillCircle=%\e%[48;5;%%~4m" ) else ( set "$fillCircle=%\e%[48;5;15m" )%\n%
-	set /a "rr=%%~3 * %%~3"%\n%
-	for /l %%y in (-%%~3,1,%%~3) do (%\n%
-		set /a "cy=%%~2 + %%y", "sx=0"%\n%
-		for /l %%x in (-%%~3,1,%%~3) do (%\n%
-			set /a "xxyy=%%x*%%x+%%y*%%y"%\n%
-			if ^^!xxyy^^! lss ^^!rr^^! (%\n%
-				if not defined cx set /a "cx=%%~1 + %%x"%\n%
-				set /a "sx+=1"%\n%
-			)%\n%
+rem %@fillCircle% radius color <rtn> !$fillCircle!
+set @fillCircle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
+	if "%%~2" neq "" ( set "$fillCircle=%\e%[48;5;%%~2m" ) else ( set "$fillCircle=%\e%[48;5;15m" )%\n%
+	set /a "$rr=%%~1 * %%~1", "hr=%%~1 - 1"%\n%
+	for /l %%y in (-%%~1,1,%%~1) do (%\n%
+		set "$sx=0"%\n%
+		for /l %%x in (-%%~1,1,%%~1) do (%\n%
+			set /a "$xxyy=%%x*%%x+%%y*%%y"%\n%
+			if ^^!$xxyy^^! lss ^^!$rr^^! set /a "$sx+=1"%\n%
 		)%\n%
-		if ^^!sx^^! gtr 0 (%\n%
-			set "$fillCircle=^!$fillCircle^!%\e%[^!cy^!;^!cx^!H%\e%[^!sx^!X"%\n%
-			set "cx="%\n%
+		if ^^!$sx^^! gtr 0 (%\n%
+			set /a "shift=lx / 2 - $sx / 2"%\n%
+			if ^^!shift^^! leq -1 (%\n%
+				set "shift=%\e%[^!shift:-=^!D"%\n%
+				set "shift=^!shift:1=^!"%\n%
+			) else if ^^!shift^^! geq 1 (%\n%
+				set "shift=%\e%[^!shift^!C"%\n%
+				set "shift=^!shift:1=^!"%\n%
+			) else (%\n%
+				set "shift="%\n%
+			)%\n%
+			set "$fillCircle=^!$fillCircle^!^!shift^!%\e%[^!$sx^!X%\e%[B"%\n%
+			set /a "lx=$sx"%\n%
 		)%\n%
 	)%\n%
-	set "$fillCircle=^!$fillCircle^!%\e%[0m"%\n%
+	set "$fillCircle=%\e%[^!hr^!A^!$fillCircle^!%\e%[0m"%\n%
 )) else set args=
 
 
@@ -81,22 +88,22 @@ set @fillCircle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!a
 
 
 :_rect
-rem %@rect% x y w h <rtn> !$rect!
-set @rect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
-	set /a "$w=%%~3-2", "$h=%%~4-2"%\n%
+rem %@rect% w h <rtn> !$rect!
+set @rect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
+	set /a "$w=%%~1-2", "$h=%%~2-2"%\n%
 	for /f "tokens=1,2" %%A in ("^!$w^! ^!$h^!") do (%\n%
 		set "$rect=^!$q:~0,%%~B^!"%\n%
-		set "$rect=%\e%[%%~2;%%~1H%\e%(0%\e%7l^!$q:~0,%%~A^!k%\e%8%\e%[B^!$rect:q=%\e%7x%\e%[%%~ACx%\e%8%\e%[B^!m^!$q:~0,%%~A^!j%\e%(B%\e%[0m"%\n%
+		set "$rect=%\e%(0%\e%7l^!$q:~0,%%~A^!k%\e%8%\e%[B^!$rect:q=%\e%7x%\e%[%%~ACx%\e%8%\e%[B^!m^!$q:~0,%%~A^!j%\e%(B%\e%[0m"%\n%
 	)%\n%
 	set "$w=" ^& set "$h="%\n%
 )) else set args=
 
 :_fillRect
-rem %@fillRect% x y w h color <rtn> !$fillRect!
-set @fillRect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-5" %%1 in ("^!args^!") do (%\n%
-    if "%%~5" neq "" ( set "$fillrect=%\e%[48;5;%%~5m" ) else set "$fillrect=%\e%[48;5;15m"%\n%
-    set "$fillRect=^!$fillRect^!^!$s:~0,%%4^!%\e%[0m"%\n%
-	set "$fillrect=%\e%[%%~2;%%~1H^!$fillrect: =%\e%[%%3X%\e%[B^!"%\n%
+rem %@fillRect% w h color <rtn> !$fillRect!
+set @fillRect=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
+    if "%%~3" neq "" ( set "$fillrect=%\e%[48;5;%%~3m" ) else set "$fillrect=%\e%[48;5;15m"%\n%
+    set "$fillRect=^!$fillRect^!^!$s:~0,%%2^!%\e%[0m"%\n%
+	set "$fillrect=^!$fillrect: =%\e%[%%1X%\e%[B^!"%\n%
 )) else set args=
 
 :_roundRect

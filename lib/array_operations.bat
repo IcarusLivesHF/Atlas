@@ -1,12 +1,9 @@
-(set \n=^^^
-%= This creates an escaped Line Feed - DO NOT ALTER =%
-)
 
 :_shuffle[Array]
-rem %@shuffle[Array]% <input:*[]> <len:int>
+rem %@shuffle[Array]% arrayName arrayLength
 set @shuffle[Array]=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
 	for /l %%i in (%%~2,-1,1) do (%\n%
-		set /a "r=^!random^! %% %%i"%\n%
+		set /a "r=^!random^! %% (%%i+1)"%\n%
 		set "t=^!%%~1[%%i]^!"%\n%
 		for %%r in (^^!r^^!) do (%\n%
 			set "%%~1[%%i]=^!%%~1[%%r]^!"%\n%
@@ -16,7 +13,7 @@ set @shuffle[Array]=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in (
 )) else set args=
 
 :_reverse[Array]
-rem %@reverse[Array]% <input:*[]> <len:int>
+rem %@reverse[Array]% arrayName arrayLength
 set @reverse[Array]=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in ("^!args^!") do (%\n%
 	set /a "half=%%~2 / 2"%\n%
 	for /l %%i in (0,1,^^!half^^!) do (%\n%
@@ -30,7 +27,7 @@ set @reverse[Array]=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1,2" %%1 in (
 )) else set args=
 
 :_arrayContains
-rem %arrayContains% <input:*[]> <len:int> "value"
+rem %arrayContains% arrayName arrayLength "value"
 set @arrayContains=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
 	set "$arrayContains=false"%\n%
 	for /l %%i in (0,1,%%~2) do (%\n%
@@ -41,14 +38,14 @@ set @arrayContains=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("
 )) else set args=
 
 :_arrayToList
-rem %@arrayToList% <input:*[]> <len:int> listName
+rem %@arrayToList% arrayName arrayLength listName
 set @arrayToList=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
 	set "%%~3="%\n%
 	for /l %%i in (0,1,%%~2) do set "%%~3=^!%%~3^!^!%%~1[%%i]^! "%\n%
 )) else set args=
 
 :_listToArray
-rem %@listToArray% <input:*[]> <len:int> arrayName
+rem %@listToArray% listName arrayName
 set @listToArray=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-2" %%1 in ("^!args^!") do (%\n%
 	set "$i=-1"%\n%
 	for %%i in (^^!%%~1^^!) do (%\n%
