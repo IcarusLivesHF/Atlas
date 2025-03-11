@@ -23,11 +23,19 @@ A comprehensive Windows Batch Library, split into sublibraries to simplify and s
 NOTE:
 
 ![](https://i.imgur.com/K8A01bd.png)
-Clicking the 'Function List' icon in Notepad++
+Clicking the 'Function List' icon in Notepad++. This is usually on the RIGHT side of the window.
 
 Will open up the list of functions provided in a given library
 
 ![](https://i.imgur.com/esZMcSb.png)
+
+
+
+
+![](https://i.imgur.com/xsULnID.png)
+Clicking the 'Folder as Workspace' icon in Notepad++. This is usually on the LEFT side of the window.
+
+Will open up the list of libraries provided inside of the ..\lib\ folder
 
 ## Usage Example
  ```batch
