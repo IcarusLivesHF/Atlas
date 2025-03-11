@@ -272,8 +272,8 @@ exit
 		%@playSound% "%sfx%\"
 ```
 
-## Purpose of `LibTrim.bat`
-    + Click and Drag your sketch onto `LibTrim.bat` to zip your sketch project
+## Purpose of `LibZip.bat`
+    + Click and Drag your sketch onto `LibZip.bat` to zip your sketch project
     + the libraries used inside `SKETCH.bat` will be zipped for you *automatically*
 
 ![](https://imgur.com/J14yz7J.gif)
