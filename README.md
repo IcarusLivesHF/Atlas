@@ -37,6 +37,9 @@ Clicking the 'Folder as Workspace' icon in Notepad++. This is usually on the LEF
 
 Will open up the list of libraries provided inside of the ..\lib\ folder
 
+![](https://i.imgur.com/JdgM8q7.png)
+
+
 ## Usage Example
  ```batch
 @echo off & setlocal enableDelayedExpansion
