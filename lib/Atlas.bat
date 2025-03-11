@@ -56,13 +56,12 @@ if "%~2" neq "" (
 
 
 
-:_while %while% ( condition %end.while% )
+:_while 
+rem %while% ( condition %end.while% )
 REM maximum number of iterations: 16*16*16*16*16 = 1,048,576
 set "while=for /l %%i in (1 1 16)do if defined do.while"
 set "while=set do.while=1&!while! !while! !while! !while! !while! "
-set "end.while=set "do.while=""
-
-
+set "endWhile=set "do.while=""
 
 
 

@@ -1,26 +1,47 @@
 	This is **NOT** a complete list of functions/abilities provided by these libraries.
 	Please feel free to look inside the source code of any of the library files to see
 	what else may be available to you.
+	
+	call lib\Atlas wid hei
+		empties environment
+		%while% ( condition %end.while% )
+		\n
+		\e
+		@32bitlimit
+		wid/width , hei/height
+		
+	ASCII.txt
+		Set of all ascii characters for you to view and use
 
 	call lib\3Dbox
 		%@box% x y sizeX sizeY sizeZ angleX angleY angleZ <rtn> !$box!
 
-	call lib\3x4font.bat "string"
+	call lib\3x4font.bat "string" <rtn> %$3x4Font%
 
 	call lib\array_operations
-		%@shuffle[Array]% <input:*[]> <len:int>
-		%@reverse[Array]% <input:*[]> <len:int>
-		%arrayContains% <input:*[]> <len:int> "value"
-		%@arrayToList% <input:*[]> <len:int> listName
-		%@listToArray% <input:*[]> <len:int> arrayName
+		%@shuffle[Array]% arrayName arrayLength
+		%@reverse[Array]% arrayName arrayLength
+		%arrayContains% arrayName arrayLength "value"
+		%@arrayToList% arrayName arrayLength listName
+		%@listToArray% listName arrayName
 		%@bubble[list]% %list%;newList
 		%@selection[list]% %list%;newList
 		
 	call lib\buttons
 		%@makeButton% x y ID 'string'
+			echo %buttonDisplay% to view ALL buttons at once
+			%ifUserClicks_btn[ID]% where ID is the ID you provide.
+			
 		%@killButton% 1 4 5 2 3 6 - to kill any or all buttons
+		
 		%@makeSlider% x y length min max sliderColor positionColor
+			echo !sliderDisplay!
+			%ifSliderClicked% set /a "%moveSlider%"
+			
 		%makeInputBar% rtnVar x y length TextColor BackColor
+			echo !inputDisplay!
+			%ifInputClicked%
+		
 		
 	call lib\calendar x y
 		echo %$calendar%
@@ -47,14 +68,14 @@
 		%decode:?=!base64!% <rtn> plainText.txt
 		
 	call lib\gfx
-		%while% ( condition %end.while% )
 		%@point% y;x 2/5;0-255;0-255;0-255
 		%@ellipse% x y ch cw color <rtn> $ellipse
 		%@circle% cx cy cr COLOR <rtn> !$circle!
+		%@fillCircle% radius color <rtn> !$fillCircle!
 		%@rect% x y w h <rtn> !$rect!
 		%@fillRect% x y w h color <rtn> !$fillRect!
 		%@roundrect% x y w h r color <rtn> !$roundrect!
-		%@bezier% x1 y1 x2 y2 x3 y3 x4 y4 color <rtn> !$bezier!
+		%@triangle% x1 y1 x2 y2 x3 y3 color <rtn> !$triangle!
 
 	call lib\gfxline dda/bresenham -> default = DDA
 		%@line% x0 y0 x1 y1 color <rtn> $line
@@ -64,10 +85,8 @@
 		%@sevenSegmentDisplay% x y value color <rtn> $sevenSegmentDisplay
 		%@msgBox% ;title;text;x;y;textColor;boxColor;boxLength
 		%@arc% x y size DEGREES(0-360) arcRotationDegrees(0-360) lineThinness color
-		rem MUST CALL lib\gfxline to obtain %@line% first
-			%@triangle% x0 y0 x1 y1 x2 y2 <rtn> !$triangle!
-			%@quad% x0 y0 x1 y1 x2 y2 <rtn> !$quad!
 		%@AAline% x0 x1 y0 y1 <rtn> !$AAline!
+		%@bezier% x1 y1 x2 y2 x3 y3 x4 y4 color <rtn> !$bezier!
 		
 	call lib\gfxUtil
 		%@getDim% - get current dimensions of window <rtn> !wid! !width! !hei! !height!
@@ -88,62 +107,75 @@
 		or(b1,b2) <rtn> 0:false or 1:true
 		xor(b1,b2) <rtn> 0:false or 1:true
 		tern(bool,v1,v2)  <rtn> ?:
-		
 	call lib\math
-		sin deg/rad
-		cos deg/rad
-		rotate
+		rnd(x,y)
+		rndSgn_A
+		rndSgn_B
+		rndRGB
+		log2
+		log10
 		sqrt
+		isqrt
+		mag
 		abs
-		dist
-		map
-		lerp
-		interpolate
-		clamp
-		randomMagnitude
-		pow
-
-	call lib\misc
-		gravity
-		smoothstep
-		bitcolor
-		rndrbg
-		det
-		dot
-		randomRangeBoundary
-		randomRange
-		kappa
-		every
-		@avg
+		sgn
 		sign
-		getState
-		index
 		max
 		min
+		floor
+		ceil
 		swap
 		cmp
-		BBA
-		checkBounds
-		hypot
+		pow
+	call lib\math_geo
+		dist
+		boundingBox
+		det
+		dot
 		matrixMul_2x2
 		matrixMul_3x3
-		@log2
-		@log10
+	call lib\math_lerp
+		map
+		lerp
+		constrain
+		interpolate
+		smoothstep_A
+		smoothstep_B
+		fade_A
+		fade_B
+		bitColor
+	call lib\math_trig degrees/radians
+		sin       degrees/radians
+		cos       degrees/radians
+		rotate    degrees/radians
+		tan       degrees
+		atan      degrees/radians
+		atan2     degrees/radians
+		pi
+		tau / two_pi
+		pi32
+		quarter_pi
+	call lib\math_misc
+		gravity
+		every
+		getState
+	call lib\geometry
+		SQ(x)
+		CUBE(x)
+		pmSQ(x)
+		pmREC(l,w)
+		pmTRI(a,b,c)
+		areaREC(l,w)
+		areaTRI(b,h)
+		areaTRA(b1,b2,h)
+		volBOX(l,w,h)
+		areaCircle(r)
 		
 	security.bat -> needs to be turned into macros, not complete, can still be used as functions
 		:scriptGuard
 		:executionLimit
 		:machineLock
 		:dateExpiry
-
-	call lib\stdlib wid hei /multithread
-		empties environment
-		\n
-		\e
-		@32bitlimit
-		wid/width , hei/height
-		rem if /multithread
-			%@multithread% main controller "path" "%~f0" <- last argument *must* be %~f0
 			
 	call lib\util
 		%@getAdmin%
@@ -151,10 +183,10 @@
 		%@unique%
 		%getlen% var <rtn> $len
 		%string_properties% "string" <rtn> $, $_rev $_upp $_low
+		%@modFile% line#/file.txt/string/e,i,a,p,d/b-ackup
 
 	call lib\turtleGFX
-		%turtle.forward% X
-		%turtle.backward% X
+		%turtle.move% X/-X
 		%turtle.left% 90
 		%turtle.right% 90
 		%turtle.setx% 90
@@ -170,10 +202,21 @@
 		%turtle.dot% - stamp screen with dot
 		%turtle.plot% - stamp screen with dot
 		%turtle.screenSize% wid hei - set screen size
-		%turtle.push% save location and heading to array
-		%turtle.pop% return to saved location
-		%turtle.home% - send turtle to 0,0
-		%turtle.center% - send turtle to middle screen
-		%turtle.penDown% - begin draw
-		%turtle.penUp% - stop draw
-		%turtle.clearScreen% - clear screen
+		%turtle.push%          - save location and heading to array
+		%turtle.pop%           - return to saved location
+		%turtle.home%          - send turtle to 0,0
+		%turtle.center%        - send turtle to middle screen
+		%turtle.penDown%       - begin draw
+		%turtle.penUp%         - stop draw
+		%turtle.clearScreen%   - clear screen
+		
+	call lib\radish
+		This is how you execute radish in a separate process
+			( %radish% "%~nx0" radish_wait ) & exit
+			:radish_wait
+			( %while% if exist "radish_ready" %end.while% ) & del /f /q "radish_ready"
+		
+		%@radish% <no arguments> <rtn> !mouseX! !mouseY! !L_click! !R_click! !B_click! !scrollUp! !scrollDown! !keysPressed!
+		
+	call lib\sound
+		%@playSound% "%sfx%\"
