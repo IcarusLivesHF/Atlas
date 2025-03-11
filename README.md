@@ -15,7 +15,7 @@ A comprehensive Windows Batch Library, split into sublibraries to simplify and s
 1. [Getting Started](#getting-started)
 2. [Usage Example](#usage-example)
 3. [Library Overview](#library-overview)
-4. [Purpose of `LibTrim.bat`](#purpose-of-libtrimbat)
+4. [Purpose of `LibZip.bat`](#purpose-of-libzipbat)
 
 ---
 
