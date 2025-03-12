@@ -173,7 +173,7 @@ exit
 		rndSgn_A                          set /a "out=%rndSgn_A%"
 		rndSgn_B                          set /a "out=%rndSgn_B%"
 		rndRGB                            set /a "%rndRGB%"                            output: !r! !g! !b!
-		log2                              set /a "x=, out=%@log2%
+		log2                              set /a "x=, out=%@log2%"
 		log10                             set /a "x=, out=%@log10%"
 		sqrt                              set /a "n=, out=%sqrt%"
 		isqrt                             set /a "x=, out=%isqrt%"
