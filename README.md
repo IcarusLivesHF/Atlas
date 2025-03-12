@@ -59,7 +59,7 @@ exit
 ## Library Overview
 # Table of Contents #
  ```batch
-		This is **NOT** a complete list of functions/abilities provided by these libraries.
+	This is **NOT** a complete list of functions/abilities provided by these libraries.
 	Please feel free to look inside the source code of any of the library files to see
 	what else may be available to you.
 	
@@ -169,68 +169,69 @@ exit
 		xor(b1,b2) <rtn> 0:false or 1:true
 		tern(bool,v1,v2)  <rtn> ?:
 	call lib\math
-		rnd(x,y)
-		rndSgn_A
-		rndSgn_B
-		rndRGB
-		log2
-		log10
-		sqrt
-		isqrt
-		mag
-		abs
-		sgn
-		sign
-		max
-		min
-		floor
-		ceil
-		swap
-		cmp
-		pow
+		rnd(x,y)                          set /a "x=, y=, out=%rnd(x,y)%"
+		rndSgn_A                          set /a "out=%rndSgn_A%"
+		rndSgn_B                          set /a "out=%rndSgn_B%"
+		rndRGB                            set /a "%rndRGB%"                            output: !r! !g! !b!
+		log2                              set /a "x=, out=%@log2%
+		log10                             set /a "x=, out=%@log10%"
+		sqrt                              set /a "n=, out=%sqrt%"
+		isqrt                             set /a "x=, out=%isqrt%"
+		mag                               set /a "x=, y=, out=%mag%"
+		abs                               set /a "x=, out=%abs%"
+		sgn                               set /a "x=, out=%sgn%"
+		sign                              set /a "x=, out=%sign%"
+		max                               set /a "x=, y=, out=%max%"
+		min                               set /a "x=, y=, out=%min%"
+		floor                             set /a "x=, y=multiple of 10, out=%floor%"
+		ceil                              set /a "x=, y=multiple of 10, out=%ceil%"
+		swap                              set /a "x=, y=, %swap%"
+		cmp                               set /a "x=, y=, out=%cmp%"
+		pow                               set /a "x=, n=, %pow%" & %@pow%              output: !$pow!
 	call lib\math_geo
-		dist
-		boundingBox
-		det
-		dot
-		matrixMul_2x2
-		matrixMul_3x3
+		dist                              set /a "x1=, y1=, x2=, y2=, out=%dist%"
+		boundingBox                       set /a "x=, y=, a=, b=, c=, d=, out=%BBA%"
+		det                               set /a "u1=, u2=, v1=, v2=, out=%det%"
+		dot                               set /a u1=, v1=, u2=, v2=, out=%dot%
+		matrixMul_2x2                     set /a "a1=, b1=, c1=, d1=, a2=, b2=, c2=, d2=, %matrixMul_2x2%"                                 output: !$a!-!$d!
+		matrixMul_3x3                     set /a "a=, b=, c=, d=, e=, f=, g=, h=, i=, j=, k=, l=, m=, n=, o=, p=, q=, r=, %matrixMul_3x3%" output: !$a!-!$i!
 	call lib\math_lerp
-		map
-		lerp
-		constrain
-		interpolate
-		smoothstep_A
-		smoothstep_B
-		fade_A
-		fade_B
-		bitColor
-	call lib\math_trig degrees/radians
-		sin       degrees/radians
-		cos       degrees/radians
-		rotate    degrees/radians
-		tan       degrees
-		atan      degrees/radians
-		atan2     degrees/radians
-		pi
-		tau / two_pi
-		pi32
-		quarter_pi
+		map                               set /a "v=, a=, b=, c=, d=, out=%map%"
+		lerp                              set /a "a=, b=, c=, out=%lerp%"
+		constrain                         set /a "lo=, hi=, x=, value=%@constrain%
+		interpolate                       set /a "a=, b=, c=, out=%interpolate%"
+		smoothstep_A                      set /a "x=, out=%smoothStep_A%"
+		smoothstep_B                      set /a "x=, out=%smoothStep_B%"
+		fade_A                            set /a "x=, out=%fade_A%"
+		fade_B                            set /a "x=, out=%fade_B%"
+		bitColor                          set /a "r=, g=, b=, out=%bitColor%"
+	call lib\math_trig degrees/radians    
+		sin            degrees/radians    set /a "out=rad * !sin:x=angle!/10000"
+		cos            degrees/radians    set /a "out=rad * !cos:x=angle!/10000"
+		rotate         degrees/radians
+		tan            degrees            set /a "out=%tan:x=value * 10%"
+		atan           degrees/radians    set /a "x=, out=%atan%"
+		atan2          degrees/radians    set /a "x=, y=, out=%atan2%"
+		tau / two_pi                      62832 -> 6.2832
+		pi                                31416 -> 3.1416
+		pi32                              47124 -> 4.7124
+		half_pi                           15708 -> 1.5708
+		quarter_pi                        7854  -> 0.7854
 	call lib\math_misc
-		gravity
-		every
-		getState
+		gravity                           set /a "gravity:?=VARIABLE_AFFECTED"
+		every                             set /a "%every:x=frames%" ; must define %frameCount%
+		getState                          set /a "a=, b=, c=, d=, out=%getState%"
 	call lib\geometry
-		SQ(x)
-		CUBE(x)
-		pmSQ(x)
-		pmREC(l,w)
-		pmTRI(a,b,c)
-		areaREC(l,w)
-		areaTRI(b,h)
-		areaTRA(b1,b2,h)
-		volBOX(l,w,h)
-		areaCircle(r)
+		SQ(x)           
+		CUBE(x)           
+		pmSQ(x)           
+		pmREC(l,w)           
+		pmTRI(a,b,c)           
+		areaREC(l,w)           
+		areaTRI(b,h)           
+		areaTRA(b1,b2,h)           
+		volBOX(l,w,h)           
+		areaCircle(r)           
 		
 	security.bat -> needs to be turned into macros, not complete, can still be used as functions
 		:scriptGuard
@@ -239,12 +240,12 @@ exit
 		:dateExpiry
 			
 	call lib\util
-		%@getAdmin%
-		%@download% url file - to remain backward compatible, PowerShell.
-		%@unique%
-		%getlen% var <rtn> $len
-		%string_properties% "string" <rtn> $, $_rev $_upp $_low
-		%@modFile% line#/file.txt/string/e,i,a,p,d/b-ackup
+		%@getAdmin%                no arguments/output
+		%@download%                url file - to remain backward compatible, PowerShell.
+		%@unique%                  no arguments/output
+		%getlen%                   var <rtn> $len
+		%string_properties%        "string" <rtn> $, $_rev $_upp $_low
+		%@modFile%                 line#/file.txt/string/e,i,a,p,d/b-ackup
 
 	call lib\turtleGFX
 		%turtle.move% X/-X
