@@ -198,7 +198,7 @@ exit
 	call lib\math_lerp
 		map                               set /a "v=, a=, b=, c=, d=, out=%map%"
 		lerp                              set /a "a=, b=, c=, out=%lerp%"
-		constrain                         set /a "lo=, hi=, x=, value=%@constrain%
+		constrain                         set /a "lo=, hi=, x=, value=%@constrain%"
 		interpolate                       set /a "a=, b=, c=, out=%interpolate%"
 		smoothstep_A                      set /a "x=, out=%smoothStep_A%"
 		smoothstep_B                      set /a "x=, out=%smoothStep_B%"
