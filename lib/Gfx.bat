@@ -46,7 +46,7 @@ set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^
 		set "$circle=^!$circle^!%\e%[^!b^!;^!a^!H %\e%[^!b^!;^!c^!H %\e%[^!d^!;^!a^!H %\e%[^!d^!;^!c^!H %\e%[^!g^!;^!f^!H %\e%[^!g^!;^!e^!H %\e%[^!h^!;^!f^!H %\e%[^!h^!;^!e^!H "%\n%
 		if ^^!$d^^! leq 0 ( set /a "$d=$d + 4 * x + 6"%\n%
 		) else set /a "y-=1", "$d=$d + 4 * (x - y) + 10"%\n%
-		if ^^!x^^! GEQ ^^!y^^! ^!End.while^!%\n%
+		if ^^!x^^! GEQ ^^!y^^! ^!endWhile^!%\n%
 		set /a "x+=1"%\n%
 	)%\n%
 	set "$circle=^!$circle^!%\e%[0m"%\n%
