@@ -6,7 +6,7 @@ set @toHex=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1" %%1 in ("^!args^!")
 	set "$hex="%\n%
 	for /L %%N in (1,1,8) do (%\n%
 		set /a "d=dec&15,dec>>=4"%\n%
-		for %%D in (^^!d^^!) do if "^!hex.list:~%%D,1^!" neq "0" set "$hex=^!hex.list:~%%D,1^!^!$hex^!"%\n%
+		for %%D in (^^!d^^!) do set "$hex=^!hex.list:~%%D,1^!^!$hex^!"%\n%
 	)%\n%
 )) else set args=
 
@@ -41,7 +41,7 @@ set @encode=for %%# in (1 2) do if %%#==2 ( for /f "tokens=*" %%1 in ("^!args^!"
 	certutil -encode "inFile.txt" "outFile.txt"^>nul%\n%
 	for /f "tokens=* skip=1" %%a in (outFile.txt) do (%\n%
 		if "%%~a" neq "-----END CERTIFICATE-----" (%\n%
-			set "base64=!base64!%%a"%\n%
+			set "$encode=!$encode!%%a"%\n%
 		)%\n%
 	)%\n%
 	del /f /q "outFile.txt"%\n%
@@ -54,7 +54,7 @@ set @decode=for %%# in (1 2) do if %%#==2 ( for /f "tokens=*" %%1 in ("^!args^!"
 	echo %%~1^>inFile.txt%\n%
 	certutil -decode "inFile.txt" "outFile.txt"^>nul%\n%
 	for /f "tokens=*" %%a in (outFile.txt) do (%\n%
-		set "plainText=%%a"%\n%
+		set "$decode=%%a"%\n%
 	)%\n%
 	del /f /q outFile.txt%\n%
 	del /f /q inFile.txt%\n%

@@ -1,19 +1,25 @@
-set "degreesMode=0"
-if /i "%~1" equ ""        set /a "degreesMode+=1"
-if /i "%~1" equ "degrees" set /a "degreesMode+=1"
+set "METHODS=PD.poly_deg PR.poly_rad RAD8.radix_q8 BQ10.bhaskara_q10"
 
-if %degreesMode% gtr 0 (
+for %%M in (%METHODS%) do (
+	for /F "tokens=1,2 delims=." %%A in ("%%~M") do (
+		if /I "%%A"=="%~1" (
+			call :%%~B %~2
+		)
+	)
+)
+goto :eof
 
 
-	rem This version of SIN/COS is for DEGREES
-	
-	rem set /a "x=RADIANS, out=%degrees%"
-	set "degrees=x * 180 / 31416"
+
+
+:poly_deg
+	rem Polynomial approximation - version of SIN/COS is for DEGREES
+	set "$BASE=10000"
 	
 	rem set /a "rad * !cos:x=angle!/10000"         set /a "rad * !sin:x=angle!/10000"
-	set "sin=(a=((x*31416/180)%%62832)+(((x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000) "
-	set "cos=(a=((15708-x*31416/180)%%62832)+(((15708-x*31416/180)%%62832)>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000) "
-	
+	set "sin=(c=((      x*31416/180)%%62832),a=c+(c>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000) "
+	set "cos=(c=((15708-x*31416/180)%%62832),a=c+(c>>31&62832), b=(a-15708^a-47124)>>31,a=(-a&b)+(a&~b)+(31416&b)+(-62832&(47123-a>>31)),a-a*a/1875*a/320000+a*a/1875*a/15625*a/16000*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000) "
+
 	rem set /a "out=%tan:x=value * 10%"
 	set "tan=( one=1723, y=x*one/10, pi=31416*one/10000, y=y*pi/(180*one), y2=y*y/one, ((120*one-6*one*y2/one)*y2/one-720*one)*y/((((y2-30*one)*y2/one+360*one)*y2/one)-720*one)*1000/one )"
 
@@ -23,15 +29,19 @@ if %degreesMode% gtr 0 (
 	rem set /a "x=, y=, out=%atan2% / 100"
 	set "atan2=(I0=((~-x>>31)&1)&((~x>>31)&1), I0*(9000*((y>>31)-((-y)>>31)))+(1-I0)*(^!Atan:x=(1000*y)/(x+I0)^!+18000*(-(x>>31))*(1+2*(y>>31))))"
 
-
-) else if /i "%~1" equ "radians" (
-
-
-	rem This version of SIN/COS is for RADIANS
-	set /a "PI=31416, HALF_PI=PI / 2, TAU=TWO_PI=2*PI, PI32=PI+HALF_PI, QUARTER_PI=PI / 4"
-	
+	rem set /a "x=RADIANS, out=%degrees%"
+	set "degrees=x * 180 / 31416"
 	rem set /a "x=DEGREES, out=%radians%"
-	set "radians=x * pi / 180"
+	set "radians=x * 31416 / 180"
+goto :eof
+
+
+
+
+:poly_rad
+	rem Polynomial approximation - version of SIN/COS is for RADIANS
+	
+	set /a "PI=31416, HALF_PI=PI / 2, TAU=TWO_PI=2*PI, PI32=PI+HALF_PI, QUARTER_PI=PI / 4, $BASE=10000"
 	
 	set "_SIN=a-a*a/1920*a/312500+a*a/1920*a/15625*a/15625*a/2560000-a*a/1875*a/15360*a/15625*a/15625*a/16000*a/44800000"
 	set "sin=(a=(        x)%%62832, c=(a>>31|1)*a, a-=(((c-47125)>>31)+1)*((a>>31|1)*62832)  +  (-((c-47125)>>31))*( (((c-15709)>>31)+1)*(-(a>>31|1)*31416+2*a)  ), !_SIN!)"
@@ -44,5 +54,34 @@ if %degreesMode% gtr 0 (
 	REM set /a "x=, y=, out=%atan2%"
 	set "atan2=( I0=((~-x>>31)&1)&((~x>>31)&1), I0*(15708*((y>>31)-((-y)>>31)))+(1-I0)*(^!Atan:x=(1000*y)/(x+I0)^!+31416*(-(x>>31))*(1+2*(y>>31))) )"
 
-)
-set "degreesMode="
+	rem set /a "x=RADIANS, out=%degrees%"
+	set "degrees=x * 180 / 31416"
+	rem set /a "x=DEGREES, out=%radians%"
+	set "radians=x * 31416 / 180"
+goto :eof
+
+
+
+
+:bhaskara_q10
+	rem define a BASE when 1-15
+	set /a "$e=%~1,$e+=((($e-8)>>31)&1)*(8-$e)+(((15-$e)>>31)&1)*(15-$e), $BASE=1<<$e"
+	
+	set "$=$M=(((180-$A)>>31)&1),$F=($M*(360-$A)+(1-$M)*$A),$n=4*$F*(180-$F),$d=40510-$F*(180-$F),$s=(1-2*$M),$s*(($n*$BASE)/$d)"
+	set "sin=($A=(x%%360), %$%)"
+	set "cos=($A=((x+90)%%360), %$%)"
+	set "$="
+goto :eof
+
+
+
+
+:radix_q8
+	rem 4terms
+	set "$BASE=256"
+	
+	set "$=$r=$n%%1608, $m=$r>>31, $n=($r^$m)-$m, $a=($n*163)>>16, $n-=$a*402, $n+=($a&1)*(402-($n<<1)), $t=$n*$n>>8, (1-(($a+1)&2))*(256-($t>>1)+(($t*$t*11)>>16))"
+	set "cos=($N=(x * 804 / 180), %$%)"
+	set "sin=($N=(x * 804 / 180)-402, %$%)"
+	set "$="
+goto :eof

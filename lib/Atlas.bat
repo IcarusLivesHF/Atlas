@@ -28,14 +28,13 @@ for /f %%a in ('echo prompt $E^| cmd') do set "\e=%%a" %= \e =%
 
 
 rem 2147483647   or   0x7FFFFFFF
-set /a "@32bitlimit=(1<<31)-1"
+set /a "$32b=(1<<31)-1"
 
 
 
 
+( for /l %%i in (0,1,6) do set "$s=!$s!!$s!  " ) & set "$q=!$s: =q!"
 
-rem define a few buffers for other libraries
-( for /l %%i in (0,1,80) do set "$s=!$s!!$s!  " ) & set "$q=!$s: =q!"
 
 
 
@@ -57,12 +56,16 @@ if "%~2" neq "" (
 
 
 :_while 
-rem %while% ( condition %end.while% )
+rem %while% ( condition %endwhile% )
 REM maximum number of iterations: 16*16*16*16*16 = 1,048,576
 set "while=for /l %%i in (1 1 16)do if defined do.while"
 set "while=set do.while=1&!while! !while! !while! !while! !while! "
 set "endWhile=set "do.while=""
 
+
+set @getTimeCS=for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "?=(((1%%a*60)+1%%b)*60+1%%c)*100+1%%d"
+
+set @getTimeCS=for /f "tokens=1-4 delims=:.," %%a in ("^!time: =0^!") do set /a "?=( 1%%a*3600000 + 1%%b*60000 + 1%%c*1000 + (1%%d%%100)*10 ) %% 86400000"
 
 
 

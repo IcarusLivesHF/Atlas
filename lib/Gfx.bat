@@ -4,7 +4,8 @@ set "PRE="9999 0" "9952 980" "9808 1950" "9571 2901" "9240 3824" "8821 4711" "83
 
 
 
-
+rem define a few buffers
+( for /l %%i in (0,1,80) do set "$s=!$s!!$s!  " ) & set "$q=!$s: =q!"
 
 
 
@@ -41,7 +42,7 @@ rem %@circle% cx cy cr COLOR <rtn> !$circle!
 set @circle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^!") do (%\n%
 	if "%%~4" equ "" ( set "$circle=%\e%[48;5;15m" ) else ( set "$circle=%\e%[48;5;%%~4m" )%\n%
 	set /a "$d=3 - 2 * %%~3, x=0, y=%%~3"%\n%
-	^!While^! (%\n%
+	^!while^! (%\n%
 		set /a "a=%%~1 + x, b=%%~2 + y, c=%%~1 - x, d=%%~2 - y, e=%%~1 - y, f=%%~1 + y, g=%%~2 + x, h=%%~2 - x"%\n%
 		set "$circle=^!$circle^!%\e%[^!b^!;^!a^!H %\e%[^!b^!;^!c^!H %\e%[^!d^!;^!a^!H %\e%[^!d^!;^!c^!H %\e%[^!g^!;^!f^!H %\e%[^!g^!;^!e^!H %\e%[^!h^!;^!f^!H %\e%[^!h^!;^!e^!H "%\n%
 		if ^^!$d^^! leq 0 ( set /a "$d=$d + 4 * x + 6"%\n%
@@ -149,7 +150,7 @@ set @triangle=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-8" %%1 in ("^!arg
 			if ^^!$y2^^! equ ^^!$y3^^! (set /a "$xs=$x2") else set /a "$xs=$x2+(%%y-$y2)*$d3 / ($y3 - $y2)"%\n%
 			if ^^!$y1^^! equ ^^!$y3^^! (set /a "$xe=$x1") else set /a "$xe=$x1+(%%y-$y1)*$d2 / ($y3 - $y1)"%\n%
 		)%\n%
-		if ^^!$xs^^! gtr ^^!$xe^^! (	set /a "$dx=$xs-$xe+1"%\n%
+		if ^^!$xs^^! gtr ^^!$xe^^! (   set /a "$dx=$xs-$xe+1"%\n%
 					if ^^!$xe^^! lss 1 set /a "$dx=$dx-(-$xe+1), $xe=1"%\n%
 					set "$triangle=^!$triangle^!%\e%[%%y;^!$xe^!H%\e%[^!$dx^!X"%\n%
 			) else (%\n%

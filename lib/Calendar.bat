@@ -1,23 +1,4 @@
-:_calendar.click
-rem %@calendar.click% /l1,/l2,/r1,/r2
-set @calendar.click=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1" %%1 in ("^!args^!") do (%\n%
-	for %%i in (^^!date.button.list^^!) do for /f "tokens=1-3 delims=-" %%a in ("%%~i") do (%\n%
-		set /a "cb.x=(%%b * 4) + %~1 - 3", "cb.x0=(%%b * 4) + %~1 - 1 - 3","cb.x1=(%%b * 4) + %~1 + 1 - 3","cb.y=%%c + (%~2 + 1)"%\n%
-		if ^^!mx^^! geq ^^!cb.x0^^! if ^^!mx^^! leq ^^!cb.x1^^! if ^^!my^^! equ ^^!cb.y^^! (%\n%
-			       if /i "%%~1" equ "/L1" (%\n%
-				if "^!lmb^!" equ "1" set "$calendar.click=%%~a"%\n%
-			) else if /i "%%~1" equ "/L2" (%\n%
-				if "^!dlb^!" equ "1" set "$calendar.click=%%~a"%\n%
-			) else if /i "%%~1" equ "/R1" (%\n%
-				if "^!rmb^!" equ "1" set "$calendar.click=%%~a"%\n%
-			) else if /i "%%~1" equ "/R2" (%\n%
-				if "^!drb^!" equ "1" set "$calendar.click=%%~a"%\n%
-			) else set "$calendar.click=%%~a"%\n%
-		)%\n%
-	)%\n%
-	for %%i in (cb.x cb.x0 cb.x1 cb.y) do set "%%~i="%\n%
-)) else set args=
-
+setlocal enableDelayedExpansion
 rem define a few buffers
 for /l %%i in (0,1,5) do set "barBuffer=!barBuffer!!barBuffer! "
 
@@ -69,14 +50,15 @@ for %%i in (%totalDaysInMonth.list%) do (
 	)
 )
 
-set /a "barVal=15 * date.percent.mapped / date.daysInMonth", "onethird=date.daysInMonth / 3", "twoThird=onethird * 2"
-if !barVal! lss !onethird! (
-	set "hue=46"
-) else if !barVal! gtr !oneThird! if !barVal! lss !twoThird! (
-	set "hue=226"
-) else if !barVal! gtr !twoThird! (
-	set "hue=196"
-)
+set /a "barVal=15 * date.percent.mapped / date.daysInMonth",^
+	   "percent=100 * date.percent.mapped/date.daysInMonth",^
+	   "t1=(2*date.daysInMonth)/3",^
+	   "t2=date.daysInMonth/3",^
+	   "m1=-((((t1-date.percent.mapped)>>31)&1) & 1)",^
+	   "m2=-((((t2-date.percent.mapped)>>31)&1) & 1) & ~m1",^
+	   "m3=~(m1 | m2)",^
+	   "hue=(m1 & 46) | (m2 & 226) | (m3 & 196)"
+
 
 if /i "!date.day!" equ "Sun" (
 	set "back=%\e%[D"
@@ -84,8 +66,8 @@ if /i "!date.day!" equ "Sun" (
 
 rem build calendar into sprite
 set /a "i=date.offset", "date.offset*=4", "date.monthLoop=date.daysInMonth - date.daysLeft"
-set "$calendar==%\e%7%\e%[38;5;15;48;5;%color%m%\e%[4m%\e%7 Days left: !date.daysleft!%\e%8%\e%[14C%\e%(0x%\e%(B Pick a date:%\e%[0m%\e%8%\e%[B%\e%7 S  %dayColor[1]% M  %dayColor[2]% T  %dayColor[3]% W  %dayColor[4]% T  %dayColor[5]% F  %\e%[0m S  %\e%8%\e%[B"
-set "$calendar!$calendar!%\e%[%date.offset%C%\e%[38;5;16;48;5;15m%back%"
+set "$calendar=%\e%7%\e%[38;5;15;48;5;%color%m%\e%[4m%\e%7 Days left: !date.daysleft!%\e%8%\e%[14C%\e%(0x%\e%(B Next 30 days%\e%[0m%\e%8%\e%[B%\e%7 S  %dayColor[1]% M  %dayColor[2]% T  %dayColor[3]% W  %dayColor[4]% T  %dayColor[5]% F  %\e%[0m S  %\e%8%\e%[B"
+set "$calendar=!$calendar!%\e%[%date.offset%C%\e%[38;5;16;48;5;15m%back%"
 
 set /a "j=1"
 for /l %%i in (%date.date%,1,%date.daysInMonth%) do (
@@ -121,5 +103,24 @@ set "date.date=!date.date.name!"
 for %%i in (bx by i r g b name hex found date.offset date.date.name date.monthLoop weekDays barval onethird twoThird hue) do set "%%~i="
 for /f "tokens=1 delims==" %%i in ('set dayColor') do set "%%~i="
 for /f "tokens=1 delims==" %%i in ('set dayDay') do set "%%~i="
-set "barBuffer="
+
+
+
+endlocal & set "$calendar=%$calendar%" & set "date.button.list=%date.button.list%"
+
+:_calendar.click
+rem %@calendar.click% l,r
+set @calendar.click=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1" %%1 in ("^!args^!") do (%\n%
+	for %%i in (%date.button.list%) do for /f "tokens=1-3 delims=-" %%a in ("%%~i") do (%\n%
+		set /a "x0=(%%b * 4) + %~1 - 4",^
+		       "x1=(%%b * 4) + %~1 + 4",^
+			   "y=%%c + %~2"%\n%
+		if ^^!mouseX^^! geq ^^!x0^^! if ^^!mouseX^^! leq ^^!x1^^! if ^^!mouseY^^! equ ^^!y^^! (%\n%
+			       if /i "%%~1" equ "L" ( if "^!l_click^!" equ "1" set "$calendar.click=%%~a"%\n%
+			) else if /i "%%~1" equ "R" ( if "^!r_click^!" equ "1" set "$calendar.click=%%~a"%\n%
+			) else set "$calendar.click=%%~a"%\n%
+		)%\n%
+	)%\n%
+	for %%i in (x0 x1 y) do set "%%~i="%\n%
+)) else set args=
 goto :eof

@@ -1,14 +1,22 @@
+rem define a few buffers
+( for /l %%i in (0,1,80) do set "$s=!$s!!$s!  " ) & set "$q=!$s: =q!"
+
+
 
 :_bar
 rem %@bar% currentValue maxValue MaxlengthOfBar
-set @Bar=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
-	set /a "bv=%%~3 * %%~1 / %%~2, ot=%%~2 / 3 + (%%~2 & 1), tt=ot * 2, hue=46, percent=100 * %%~1/%%~2"%\n%
-	if %%~1 gtr ^^!ot^^! set "hue=226"%\n%
-	if %%~1 gtr ^^!tt^^! set "hue=196"%\n%
-	for /f "tokens=1,2" %%a in ("^!bv^! ^!hue^!") do (%\n%
-		set "$bar=[%\e%[48;5;%%~bm%\e%[%%~aX%\e%[0m%\e%[%%~3C] %%~1/%%~2 ^!percent^!%%%\e%[0m"%\n%
-	)%\n%
+set @bar=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-3" %%1 in ("^!args^!") do (%\n%
+	set /a "barValue=%%~3 * %%~1 / %%~2",^
+	       "percent=100 * %%~1/%%~2",^
+	       "t1=(2*%%~2)/3",^
+		   "t2=%%~2/3",^
+		   "m1=-((((t1-%%~1)>>31)&1) & 1)",^
+		   "m2=-((((t2-%%~1)>>31)&1) & 1) & ~m1",^
+		   "m3=~(m1 | m2)",^
+		   "hue=(m1 & 46) | (m2 & 226) | (m3 & 196)"%\n%
+	set "$bar=[%\e%[48;5;^!hue^!m%\e%[^!barValue^!X%\e%[0m%\e%[%%~3C] %%~1/%%~2 ^!percent^!%%%\e%[0m"%\n%
 )) else set args=
+
 
 
 
@@ -142,19 +150,17 @@ set @AAline=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-4" %%1 in ("^!args^
 
 :_bezier
 rem %@bezier% x1 y1 x2 y2 x3 y3 x4 y4 color <rtn> !$bezier!
-set @bezier=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-9" %%a in ("^!args^!") do (%\n%
-    if "%%~i" equ "" ( set "$bezier=%\e%[48;5;15m" ) else ( set "$bezier=%\e%[48;5;%%~im" )%\n%
-    set /a "H=%%~h-%%~f","I=%%~c-%%~a","J=%%~e-%%~c","K=%%~g-%%~e","L=%%~d-%%~b","M=%%~f-%%~d"%\n%
-	for /l %%. in (1,1,50) do (%\n%
-		set /a "_=%%.<<1",^
-		        "N=((%%~a+_*I*10)/1000+%%~a)",^
-		        "O=((%%~c+_*J*10)/1000+%%~c)",^
-				"P=((%%~b+_*L*10)/1000+%%~b)",^
-				"Q=((N+_*(O-N)*10)/1000+N)",^
-				"R=((%%~d+_*M*10)/1000+%%~d)",^
-				"S=((P+_*(R-P)*10)/1000+P)",^
-				"vx=(Q+_*(((O+_*(((%%~e+_*K*10)/1000+%%~e)-O)*10)/1000+O)-Q)*10)/1000+Q",^
-				"vy=(S+_*(((R+_*(((%%~f+_*H*10)/1000+%%~f)-R)*10)/1000+R)-S)*10)/1000+S"%\n%
+set @bezier=for %%# in (1 2) do if %%#==2 ( for /f "tokens=1-9" %%1 in ("^!args^!") do (%\n%
+    if "%%~9" equ "" ( set "$bezier=%\e%[48;5;15m" ) else ( set "$bezier=%\e%[48;5;%%~9m" )%\n%
+    set /a "steps=50", "$dt=1000 / steps", "t=0",^
+           "C3x=-%%~1 + 3*%%~3 - 3*%%~5 + %%~7", "C2x=3*(%%~1 - 2*%%~3 + %%~5)", "C1x=3*(%%~3 - %%~1)", "C0x=%%~1",^
+           "C3y=-%%~2 + 3*%%~4 - 3*%%~6 + %%~8", "C2y=3*(%%~2 - 2*%%~4 + %%~6)", "C1y=3*(%%~4 - %%~2)", "C0y=%%~2"%\n%
+	for /l %%i in (0,1,^^!steps^^!) do (%\n%
+		set /a "t2 = t * t / 1000",^
+			   "t3 = t2 * t / 1000",^
+			   "vx = ((C3x*t3 + C2x*t2 + C1x*t + C0x) / 1000) + %%~1",^
+			   "vy = ((C3y*t3 + C2y*t2 + C1y*t + C0y) / 1000) + %%~2",^
+			   "t += $dt"%\n%
 		set "$bezier=^!$bezier^!%\e%[^!vy^!;^!vx^!H "%\n%
 	)%\n%
 	set "$bezier=^!$bezier^!%\e%[0m"%\n%

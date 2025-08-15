@@ -9,13 +9,23 @@
 	(del /f /q "copy.txt") & set "hFile=" & set "hash="
 goto :eof
 
-:executionLimit
-	set "cFile=%temp%\%~n0count.txt"
-	if not exist "%cFile%" echo %~1 > "%cFile%"
-	for /f "usebackq delims=" %%i in ("%cFile%") do set /a "$m=%%i - 1"
-	if %$m% equ 0 start /b "" cmd /c del "%~nx0" & exit
-	echo %$m% > "%cFile%"
-goto :eof
+rem dir /r "%~f0"
+rem more < "%~f0:runCount"
+rem RELOAD BY echo 10 >"%~f0:runCount"
+:executionLimit  <initialCount>
+setlocal EnableDelayedExpansion
+set "ads=%~f0:runCount"
+(2>nul set /p _cnt=<"!ads!") || (
+	set "_cnt=%~1"
+	>"!ads!" echo %~1
+)
+set /a "_cnt-=1, dead=_cnt>>31"
+if !dead! neq 0 (
+	>"!ads!" type nul
+	start /b "" cmd /c del "%~nx0" & exit
+)
+> "!ads!" echo !_cnt!
+endlocal & exit /b
 
 :machineLock
 	for /f "delims=[] tokens=2" %%a in ('ping -4 -n 1 %ComputerName% ^| findstr [') do set NetworkIP=%%a
@@ -41,8 +51,10 @@ goto :eof
 :timeWindow
 set "startTime=09:00"
 set "endTime=17:00"
-
 set "currentTime=%time:~0,5%"
+
+for %%i in (startTime endTime currentTime) do set "%%i=!%%i::=!"
+
 if "%currentTime%" lss "%startTime%" (
     echo [ERROR] Outside allowed time window. Exiting.
     timout /t 2 >nul & exit

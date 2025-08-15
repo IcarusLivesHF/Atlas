@@ -11,15 +11,26 @@ set @radish=(%\n%
 )
 set "equ="
 
-rem Usage: %radish_end% -> alternative to 'exit'
-set "radish_end=(taskkill /f /im "radish.exe")>nul & exit"
+rem Usage: %endRadish%
+set "endRadish=(taskkill /f /im "radish.exe")>nul"
 
 
-rem COPY/PASTE this code directly above your :main loop
+
+REM HEY DEV!
+rem
+rem
+rem ##### COPY/PASTE ##### this code directly above your :main loop and remove the comments
 REM ---------------------------------
+
+
+	rem if "%~1" neq "" goto :%~1
+
+
 	REM ( %radish% "%~nx0" radish_wait ) & exit
 	REM :radish_wait
-	REM ( %while% if exist "radish_ready" %end.while% ) & del /f /q "radish_ready"
-REM ---------------------------------
+	REM ( %while% ( if exist "radish_ready" %endwhile% )) & del /f /q "radish_ready"
+	
+	
+REM ------------------------------------------------------------------
 
 call lib\mouseAndKeys

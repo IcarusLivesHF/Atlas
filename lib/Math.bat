@@ -1,5 +1,6 @@
 REM set /a "x=, y=, out=%rnd(x,y)%"
-set "rnd(x,y)=(((^!random^! * 32768 + ^!random^!) %% (y - x + 1)) + x)"
+set /a "$seed=(%RANDOM%<<15)|%RANDOM%, $seed+=((($seed-1)>>31)&1)"
+set "rnd=($seed^=$seed<<13,$seed^=$seed>>17,$seed^=$seed<<5, (($seed&0x7FFFFFFF)%%(y-x+1))+x)"
 REM set /a "out=%rndSgn%"
 set "rndSgn_A=(^!random^! %% 2 * 2 - 1)"
 REM set /a "out=%rndSgn%"
@@ -7,6 +8,7 @@ set "rndSgn_B=(^!random^! %% 3 - 1)"
 REM set /a "%rndRGB%"
 set "rndRGB=r=^!random^! %% 255, g=^!random^! %% 255, b=^!random^! %% 255"
 rem ----------------------------------------------------------------------------------
+
 
 
 
@@ -24,7 +26,6 @@ rem set /a "n=, out=%sqrt%"
 set "sqrt=( M=(N),q=M/(11264)+40, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q=(M/q+q)>>1, q+=(M-q*q)>>31 )"
 
 rem set /a "x=, out=%isqrt%" [input range:0.001 - 2147483.647] [output range: 31.602 - 00.001]
-rem A:x>16383 B:x<16384
 set "iterA=$y=$y*(15000-x/10*($y*$y/100)/20000)/10000"
 set "iterB=$y=$y*(15000-x*($y*$y/100)/2000)/10000"
 set "condA=($y=204800>>$log/2, %iterA%, %iterA%, %iterA%, ($y+5)/10)"
@@ -37,14 +38,14 @@ rem ----------------------------------------------------------------------------
 
 
 rem set /a "x=, y=, out=%mag%"    Otherwise known as hypot() function
-set "mag=(n=(x * x + y * y) * 10000, %sqrt%)"
+set "mag=(n=(x * x + y * y), %sqrt%)"
 rem ----------------------------------------------------------------------------------
 
 
 
 
 rem set /a "x=, out=%abs%"
-set "abs=(((x)>>31|1)*(x))"
+set "abs=(M=(x>>31), (x^M)-M)"
 rem ----------------------------------------------------------------------------------
 
 
@@ -67,18 +68,22 @@ rem ----------------------------------------------------------------------------
 
 
 REM set /a "x=, y=, out=%max%"
-set "max=(x - ((((x - y) >> 31) & 1) * (x - y)))"
+set "max=(x-((x-y)&((x-y)>>31)))"
+
 REM set /a "x=, y=, out=%min%"
-set "min=(y - ((((x - y) >> 31) & 1) * (y - x)))"
+set "min=(y+((x-y)&((x-y)>>31)))"
+
+set "@max(x,y,z)=(t=x-((x-y)&((x-y)>>31)), t-((t-z)&((t-z)>>31)))"
+set "@min(x,y,z)=(t=y+((x-y)&((x-y)>>31)), z+((t-z)&((t-z)>>31)))"
 rem ----------------------------------------------------------------------------------
 
 
 
 
 rem set /a "x=, y=multiple of 10, out=%floor%"
-set "floor=(y=(y + 5) / 10 * 10, a=x, r=a%%y, n=((-r>>31)&1)&(a>>31), a - r - (n*y) )"
+set "floor=(a=(y+5)/10*10, r=x%%a, x-r-(((x>>31)&1)&((-r>>31)&1))*a)"
 rem set /a "x=, y=multiple of 10, out=%ceil%"
-set "ceil=(y=(y + 5) / 10 * 10, a=x, r=a%%y, n=((-r>>31)&1)&(a>>31), f=a - r - (n*y), f + (y & ~((r-1)>>31)) )"
+set "ceil= (y=(y + 5) / 10 * 10, r=x %% y, n=((-r>>31)&1)&(x>>31), f=x - r - (n*y), f + (y & ~((r-1)>>31)) )"
 rem ----------------------------------------------------------------------------------
 
 
